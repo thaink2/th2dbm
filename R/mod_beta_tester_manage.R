@@ -68,7 +68,6 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
             title = "Permission warning",
             confirmButtonCol = "#013DFF",
             text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à voir la table '{target_table}'"), type = "error"
-
           )
 
           return(NULL)
@@ -130,7 +129,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
       # Traiter chaque entrée expirée
       if (!alert_shown()) { # Vérifier s'il y a des entrées expirées et si l'alerte n'a pas été affichée
         alert_shown(TRUE)
-       }
+      }
     })
   })
 }

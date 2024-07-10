@@ -39,7 +39,6 @@ mod_csv_to_db_server <- function(id) {
           title = glue::glue("La table {input$table_name} existe déjà!"),
           confirmButtonCol = "#013DFF",
           text = "", type = "error"
-
         )
 
         removeModal()
@@ -55,7 +54,6 @@ mod_csv_to_db_server <- function(id) {
           text = "",
           confirmButtonCol = "#013DFF",
           type = "error"
-
         )
         return(NULL)
       }

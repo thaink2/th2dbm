@@ -190,9 +190,7 @@ mod_th2_database_management_server <-
       observe({
         req(input$table_name_del)
         target_table <<- input$table_name_del
-        th2dbm::th_shinyalert(
-
-        )
+        th2dbm::th_shinyalert()
         shinyalert::shinyalert(
           text = glue::glue("Êtes-vous sûr de vouloir supprimer la table {target_table} ?"),
           title = "Confirmation de suppression",
@@ -221,7 +219,6 @@ mod_th2_database_management_server <-
                 text = label_text,
                 type = "success"
               )
-
             }
             removeModal()
           }

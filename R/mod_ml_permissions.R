@@ -74,7 +74,6 @@ mod_ml_permissions_server <- function(id, target_perm_table = "th2_ml_permission
         confirmButtonCol = "#013DFF",
         text = resp
       )
-
     })
   })
 }

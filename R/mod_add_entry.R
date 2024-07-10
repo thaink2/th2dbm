@@ -34,7 +34,6 @@ mod_th2_entry_server <- function(id, entry_data = NULL, current_user = Sys.geten
         if (is.null(entry_data)) {
           entry_data <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
         }
-
         shinyDatetimePickers::datetimeMaterialPickerInput(inputId = ns("entry_value"), label = "", value = entry_data)
       } else if (entry_meta$entry_type %in% c("BOOLEAN", "boolean")) {
         selectInput(inputId = ns("entry_value"), label = "", choices = c(TRUE, FALSE), selected = entry_data)
@@ -218,10 +217,12 @@ mod_th2new_entry_server <- function(id, db_meta = list(
         remove_shiny_inputs(id = id, .input = input)
         refresh_file %>% saveRDS(object = Sys.time(), file = .)
         removeModal()
-        th2dbm::th_shinyalert(title = "New Entry",
-                                  text = glue::glue(response$message),
-                                  confirmButtonCol = "#013DFF",
-                                  type = response$status)
+        th2dbm::th_shinyalert(
+          title = "New Entry",
+          text = glue::glue(response$message),
+          confirmButtonCol = "#013DFF",
+          type = response$status
+        )
       },
       ignoreNULL = TRUE,
       ignoreInit = TRUE

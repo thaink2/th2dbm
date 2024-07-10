@@ -6,8 +6,6 @@
 #' @noRd
 app_ui <- function(request) {
   tagList(
-    # Ajouter des ressources externes si nécessaire
-    golem_add_external_resources(),
     # Logique de l'interface utilisateur de l'application
     bs4Dash::bs4DashPage(
       options = list(sidebarExpandOnHover = TRUE),
@@ -130,16 +128,6 @@ app_ui <- function(request) {
                 mod_beta_tester_manage_ui(id = "beta_tester")
               )
             )
-          ),
-          bs4Dash::tabItem(
-            "manage_versions",
-            bs4Dash::tabBox(
-              width = 12, selected = "Overview",
-              tabPanel(
-                title = "Overview", icon = shiny::icon("eye"),
-                mod_thaink2_local_pkg_ui(id = "versions_main")
-              )
-            )
           )
         )
       ),
@@ -149,32 +137,7 @@ app_ui <- function(request) {
           bs4Dash::controlbarItem("User Settings", icon = "users-cog", mod_change_current_user_ui("user"))
         )
       ),
-      title = "DashboardPage"
+      title = "Database Manager"
     )
-  )
-}
-
-
-#' Add external Resources to the Application
-#'
-#' This function is internally used to add external
-#' resources inside the Shiny application.
-#'
-#' @import shiny
-#' @importFrom golem add_resource_path activate_js favicon bundle_resources
-#' @noRd
-golem_add_external_resources <- function() {
-  add_resource_path(
-    "www",
-    app_sys("app/www")
-  )
-
-  tags$head(
-    favicon(),
-    bundle_resources(
-      path = app_sys("app/www"),
-      app_title = "th2dbm"
-    )
-    # Add here other external resources
   )
 }

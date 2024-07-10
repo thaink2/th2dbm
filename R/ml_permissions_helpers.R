@@ -285,7 +285,7 @@ build_user_permission_wf_profile <-
 
 #' @export
 get_user_permission <- function(target_table = "th2_wf_permissions",
-                                user = Sys.getenv("SHINYPROXY_USERNAME"), object_type = NULL ) {
+                                user = Sys.getenv("SHINYPROXY_USERNAME"), object_type = NULL) {
   # Connexion à la base de données
   db_con <- th2dbm::connect_to_database()
   available_tables <- DBI::dbListTables(conn = db_con)
@@ -293,10 +293,10 @@ get_user_permission <- function(target_table = "th2_wf_permissions",
     return(NULL)
   }
   condition <- "where 1=1"
-  if(!is.null(user)){
+  if (!is.null(user)) {
     condition <- paste(condition, "and permitted_users ='{user}'")
   }
-  if( !is.null(object_type)){
+  if (!is.null(object_type)) {
     condition <- paste(condition, "and object_type ='{object_type}'")
   }
   query_statement <-
@@ -307,7 +307,8 @@ get_user_permission <- function(target_table = "th2_wf_permissions",
                 ,ROW_NUMBER() OVER(PARTITION BY object_id ORDER BY permission_time DESC) AS rn
           FROM {target_table}",
         condition, ")AS subquery
-      WHERE rn = 1")
+      WHERE rn = 1"
+      )
     )
 
   query_res <- DBI::dbSendQuery(db_con, statement = query_statement)
@@ -329,7 +330,6 @@ filter_list_permission <-
     for (key in names(filter)) {
       print(key)
       print(filter[[key]])
-
       col_name <- rlang::sym(key)
       result <-
         result %>% dplyr::filter(.data[[col_name]] %in% filter[[key]])

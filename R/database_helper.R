@@ -12,16 +12,8 @@
 #' @export
 initialize_database <- function(target_table = "th2metadata_table",
                                 working_mode = "Dev", file_path = "./R/initializer.R", cluster = "aws") {
-  if (cluster != "aws") {
-    th2dbm:::init_product(mode = working_mode, cluster = "aws")
-    aws_db_con <- connect_to_database()
-  }
-  # Vérifier l'existence et exécuter le script d'initialisation si présent
-  # setwd("C:/TEMP/Repos/th2prouctioner")
-  if (file.exists(file_path)) {
-    th2dbm:::init_product(mode = working_mode, cluster = cluster)
-  }
 
+  aws_db_con <- connect_to_database()
   # Établir connexion à la base de données
   db_con <- connect_to_database()
 
@@ -217,7 +209,7 @@ connect_to_database <- function(
   } else {
     print(paste("Host:", db_params$host))
     # Construction de la chaîne de connexion pour les bases de données via JDBC
-    path_to_drive <- th2_install_db_drivers( jdbcs_drivers_path = path_driver, db_type = db_type)
+    path_to_drive <- th2_install_db_drivers(jdbcs_drivers_path = path_driver, db_type = db_type)
     data_source_server <- paste0(db_params$host, "/", db_params$database)
     db_con <- DatabaseConnector::connect(
       dbms = db_type,
@@ -432,31 +424,6 @@ add_entry_to_table <- function(new_entry = NULL, target_table = NULL) {
       return(list(message = glue::glue("{paste(values, collapse = ', ')} existe déjà."), status = "error"))
     }
   }
-  # # Optionnel : vérifier l'unicité de l'entrée pour certaines tables
-  # # Ceci est un exemple et peut nécessiter d'être ajusté selon vos besoins
-  # if (target_table == "data_connection_params") {
-  #   if (any(new_entry$TABLE_ID %in% existing_entries$TABLE_ID)) {
-  #     DBI::dbDisconnect(db_con)
-  #     return(list(message = glue::glue("{new_entry$TABLE_ID} existe déjà."), status = "error"))
-  #   }
-  # }
-  #
-  # if (target_table == "users_table") {
-  #   existing_entries <- DBI::dbReadTable(conn = db_con, name = target_table)
-  #   if (any(new_entry$USER_ID %in% existing_entries$USER_ID)) {
-  #     DBI::dbDisconnect(db_con)
-  #     return(list(message = glue::glue("{new_entry$USER_ID} existe déjà."), status = "error"))
-  #   }
-  # }
-  #
-  # if (target_table %in% current_permission_table()) {
-  #   existing_entries <- DBI::dbReadTable(conn = db_con, name = target_table)
-  #   if (any(new_entry$OBJECT_ID %in% existing_entries$OBJECT_ID)) {
-  #     DBI::dbDisconnect(db_con)
-  #     return(list(message = glue::glue("{new_entry$OBJECT_ID} existe déjà."), status = "error"))
-  #   }
-  # }
-
   # Ajout de la nouvelle entrée à la table
   DBI::dbWriteTable(db_con, name = target_table, value = new_entry, append = TRUE)
 
@@ -493,15 +460,13 @@ update_entry_in_table <- function(updated_entry = NULL, target_table = NULL,
 
   # Génération des clauses SET pour la mise à jour
   set_clauses <- sapply(names(updated_entry), function(col) {
-    if(!is.null(updated_entry[[col]])){
+    if (!is.null(updated_entry[[col]])) {
       # Escape single quotes in values to prevent SQL injection and syntax errors
       safe_value <- gsub("'", "''", updated_entry[[col]], fixed = TRUE)
       sprintf("%s = '%s'", col, safe_value)
-    }
-    else {
+    } else {
       sprintf("%s = NULL", col)
     }
-
   }, USE.NAMES = FALSE)
 
   # Finalisation de la requête d'update avec les conditions WHERE
@@ -811,9 +776,6 @@ add_entry_to_table_v2 <- function(new_entry = NULL, target_table = NULL) {
   if (is.null(new_entry) || is.null(target_table)) {
     return(list(message = "Les paramètres 'new_entry' et 'target_table' ne doivent pas être NULL.", status = "error"))
   }
-
-
-
   # Connexion à la base de données
   db_con <- connect_to_database(extended_types = TRUE)
 
@@ -822,7 +784,6 @@ add_entry_to_table_v2 <- function(new_entry = NULL, target_table = NULL) {
       df <- as.data.frame(t(new_entry))
       df <- df %>%
         dplyr::mutate(split_train_test = as.Date.character(split_train_test, format = "%Y-%m-%d"))
-
       DBI::dbWriteTable(db_con, name = target_table, value = df, append = TRUE, row.names = FALSE)
     },
     error = function(e) {
