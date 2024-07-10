@@ -140,30 +140,6 @@ app_ui <- function(request) {
                 mod_thaink2_local_pkg_ui(id = "versions_main")
               )
             )
-          ),
-          bs4Dash::tabItem(
-            "list_files",
-            bs4Dash::tabBox(
-              width = 12, selected = "S3 Boxes",
-              tabPanel(
-                title = "S3 Boxes", icon = shiny::icon("cloud"),
-                SaldaeReporting::mod_S3_reports_ui(id = "s3_report")
-              ),
-              tabPanel(
-                title = "Files Boxes", icon = shiny::icon("cube"),
-                mod_files_boxes_ui(id = "reports_files")
-              )
-            )
-          ),
-          bs4Dash::tabItem(
-            "gen_files",
-            bs4Dash::tabBox(
-              width = 12, selected = "Files Boxes",
-              tabPanel(
-                title = "Files Boxes", icon = shiny::icon("cube"),
-                mod_files_boxes_ui(id = "reports_files2")
-              )
-            )
           )
         )
       ),
@@ -197,9 +173,8 @@ golem_add_external_resources <- function() {
     favicon(),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "th2productioner"
+      app_title = "th2dbm"
     )
     # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
   )
 }

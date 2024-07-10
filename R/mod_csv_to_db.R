@@ -35,7 +35,7 @@ mod_csv_to_db_server <- function(id) {
       DBI::dbDisconnect(db_con)
 
       if (nrow(search_query) != 0) {
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = glue::glue("La table {input$table_name} existe déjà!"),
           confirmButtonCol = "#013DFF",
           text = "", type = "error"
@@ -50,7 +50,7 @@ mod_csv_to_db_server <- function(id) {
       new_file_path <- paste0(partie_avant_0, file_name)
 
       if (!file.exists(file_path)) {
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = glue::glue("Le fichier CSV {file_path} n'existe pas"),
           text = "",
           confirmButtonCol = "#013DFF",
@@ -86,7 +86,7 @@ mod_csv_to_db_server <- function(id) {
       }
 
       removeModal()
-      th2product::th_shinyalert(
+      th2dbm::th_shinyalert(
         title = glue::glue("La table {input$table_name} créé avec succès!"),
         text = "",
         confirmButtonCol = "#013DFF",

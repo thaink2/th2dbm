@@ -27,7 +27,7 @@ mod_change_current_user_server <-
 
       observeEvent(input$change_user_button, {
         Sys.setenv("SHINYPROXY_USERNAME" = input$change_user)
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = "Change user",
           text = glue::glue("The current user is {Sys.getenv('SHINYPROXY_USERNAME')}"),
           confirmButtonCol = "#013DFF",

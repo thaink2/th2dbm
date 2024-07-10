@@ -32,10 +32,6 @@ app_server <- function(input, output, session) {
   mod_th2use_db_table_server(id = "sale_data", target_table = "sale_data")
   mod_beta_tester_manage_server(id = "beta_tester", target_table = "beta_tester_table")
   mod_thaink2_local_pkg_server("versions_main")
-  SaldaeReporting::mod_S3_reports_server(id = "s3_report")
-  mod_files_boxes_server(id = "reports_files")
-  mod_files_boxes_server(id = "reports_files2")
-
   observeEvent(input$controlbar, {
     mod_change_current_user_ui("user")
     # if (input$controlbar) {

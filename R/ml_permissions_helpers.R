@@ -287,7 +287,7 @@ build_user_permission_wf_profile <-
 get_user_permission <- function(target_table = "th2_wf_permissions",
                                 user = Sys.getenv("SHINYPROXY_USERNAME"), object_type = NULL ) {
   # Connexion à la base de données
-  db_con <- th2product::connect_to_database()
+  db_con <- th2dbm::connect_to_database()
   available_tables <- DBI::dbListTables(conn = db_con)
   if (!target_table %in% available_tables) {
     return(NULL)
@@ -340,7 +340,7 @@ filter_list_permission <-
 #' @export
 add_create_wf_permission <- function(user_mail = NULL, target_table = "th2_wf_permissions") {
   new_user_infos <- data.frame(object_creator = user_mail, permission_time = paste0(Sys.time()), OBJECT_TYPE = "access_workflow_module", object_id = "th2mageai module", permitted_users = user_mail, permission_level = "Owner")
-  th2product::add_entry_to_table(new_entry = new_user_infos, target_table = target_table)
+  th2dbm::add_entry_to_table(new_entry = new_user_infos, target_table = target_table)
 }
 
 

@@ -18,7 +18,7 @@ mod_ml_permissions_server <- function(id, target_perm_table = "th2_ml_permission
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     if (!have_permission_to_manage(target_object = target_perm_table)) {
-      th2product::th_shinyalert(
+      th2dbm::th_shinyalert(
         title = "Permission warning",
         confirmButtonCol = "#013DFF",
         text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à ajouter une entrée à la table '{target_perm_table}'"), type = "error"
@@ -69,7 +69,7 @@ mod_ml_permissions_server <- function(id, target_perm_table = "th2_ml_permission
       )
       refresh_file %>% saveRDS(object = Sys.time(), file = .)
       removeModal()
-      th2product::th_shinyalert(
+      th2dbm::th_shinyalert(
         title = "Permissions",
         confirmButtonCol = "#013DFF",
         text = resp

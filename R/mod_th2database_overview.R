@@ -58,7 +58,7 @@ mod_th2db_overview_server <- function(id, target_table = "th2metadata_table", cu
 
     observeEvent(input$db_overview_rows_selected, {
       if (!have_permission_to_edit(target_object = target_table)) {
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
           text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à modifier la table '{target_table}'"), type = "error"

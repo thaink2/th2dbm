@@ -99,36 +99,3 @@ list_files_details <- function(directory_path = "reports", include_subdirs = FAL
 
   return(list(total_files = total_files, total_dirs = total_dirs, file_details = file_details, dir_details = dir_details))
 }
-
-
-#' Charger un Tableau S3
-#'
-#' Charge un tableau depuis un seau S3 spécifié, utilisant les identifiants AWS fournis par les variables d'environnement.
-#'
-#' @param base_s3_bucket Nom du seau S3 de base pour le tableau.
-#' @param base_s3_prefix Préfixe S3 de base pour le tableau.
-#' @return Un objet tableau S3 géré par le package `pins`.
-#' @examples
-#' load_s3_board("mon-seau-s3", "mon-prefixe-s3")
-#' @export
-load_s3_board <- function(base_s3_bucket = "th2dev", base_s3_prefix = "dashboards/") {
-  if (Sys.getenv("S3_ENDPOINT") == "") {
-    s3_endpoint <- NULL
-  } else {
-    s3_endpoint <- Sys.getenv("S3_ENDPOINT")
-  }
-  access_key <- Sys.getenv("S3_ACCESS_KEY")
-  secret_access_key <- Sys.getenv("S3_ACCESS_KEY_SECRET")
-  aws_prefix <- base_s3_prefix
-  aws_bucket <- base_s3_bucket
-  region <- Sys.getenv("S3_REGION")
-  board <- pins::board_s3(
-    bucket = aws_bucket,
-    prefix = aws_prefix,
-    access_key = access_key,
-    secret_access_key = secret_access_key,
-    region = region,
-    endpoint = s3_endpoint
-  )
-  return(board)
-}

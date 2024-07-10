@@ -13,14 +13,13 @@
 initialize_database <- function(target_table = "th2metadata_table",
                                 working_mode = "Dev", file_path = "./R/initializer.R", cluster = "aws") {
   if (cluster != "aws") {
-    th2product:::init_product(mode = working_mode, cluster = "aws")
-
+    th2dbm:::init_product(mode = working_mode, cluster = "aws")
     aws_db_con <- connect_to_database()
   }
   # Vérifier l'existence et exécuter le script d'initialisation si présent
   # setwd("C:/TEMP/Repos/th2prouctioner")
   if (file.exists(file_path)) {
-    th2product:::init_product(mode = working_mode, cluster = cluster)
+    th2dbm:::init_product(mode = working_mode, cluster = cluster)
   }
 
   # Établir connexion à la base de données
@@ -609,11 +608,11 @@ th2_add_db_connection_params <- function(params_list = list(), meta = list(
   cols_to_encrypt <- grep("^PARAM", names(data_connection_meta), value = TRUE)
   data_connection_meta[cols_to_encrypt] <- lapply(
     data_connection_meta[cols_to_encrypt],
-    th2product::encrypt_column
+    th2dbm::encrypt_column
   )
 
   # Connexion à la base de données et vérification de l'existence de l'entrée
-  db_con <- th2product::connect_to_database()
+  db_con <- th2dbm::connect_to_database()
   query_statement <- glue::glue(
     "SELECT * FROM data_connection_params WHERE OWNER = '{meta$owner}' AND ",
     "TABLE_ID = '{meta$data_name}'",
@@ -683,7 +682,7 @@ fetch_data_from_db <- function(table = NULL,
   # Combine the clauses
   sql <- glue::glue("{select_clause} {from_clause} {where_clause}")
 
-  db_con <- th2product::connect_to_database()
+  db_con <- th2dbm::connect_to_database()
   rs <- DBI::dbSendQuery(db_con, statement = sql)
   result <- DBI::dbFetch(rs)
   DBI::dbClearResult(rs)
@@ -702,7 +701,7 @@ fetch_data_from_db <- function(table = NULL,
 #' @return Un dataframe contenant les données récupérées.
 #' @export
 fetch_data_from_db_by_sql <- function(sql = NULL) {
-  db_con <- th2product::connect_to_database()
+  db_con <- th2dbm::connect_to_database()
   rs <- DBI::dbSendQuery(db_con, statement = sql)
   result <- DBI::dbFetch(rs)
   DBI::dbClearResult(rs)
@@ -756,7 +755,7 @@ update_data_in_db <- function(table, updates = list(), filter = list()) {
   sql <- glue::glue("{update_clause} {where_clause}")
 
   # Execute the SQL command
-  db_con <- th2product::connect_to_database()
+  db_con <- th2dbm::connect_to_database()
   DBI::dbExecute(db_con, sql)
   DBI::dbDisconnect(db_con)
 }
@@ -793,7 +792,7 @@ delete_data_from_db <- function(table, filter = list()) {
   sql <- glue::glue("DELETE FROM {table} {where_clause}")
 
   # Execute the SQL command
-  db_con <- th2product::connect_to_database()
+  db_con <- th2dbm::connect_to_database()
   DBI::dbExecute(db_con, sql)
   DBI::dbDisconnect(db_con)
 }
@@ -872,7 +871,7 @@ update_null_values_in_db <- function(table, column, new_value) {
   sql <- sprintf("UPDATE %s SET %s = %s WHERE %s IS NULL", table, column, value_expression, column)
 
   # Exécuter la requête SQL
-  db_con <- th2product::connect_to_database()
+  db_con <- th2dbm::connect_to_database()
   result <- DBI::dbExecute(db_con, sql)
   DBI::dbDisconnect(db_con)
 

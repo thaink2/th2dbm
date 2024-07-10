@@ -1,6 +1,6 @@
 #' mod_th2_database_management_ui
 #'
-#' @description Interface utilisateur pour le module de gestion de la base de données du package th2product.
+#' @description Interface utilisateur pour le module de gestion de la base de données du package th2dbm.
 #'
 #' Cette interface utilisateur fournit les éléments pour la création, la suppression et la mise à jour des tables dans la base de données.
 #' Elle génère dynamiquement les composants de l'interface utilisateur en fonction de l'interaction de l'utilisateur et des actions sélectionnées.
@@ -22,7 +22,7 @@ mod_th2_database_management_ui <- function(id) {
 
 #' mod_th2_database_management_server
 #'
-#' @description Logique serveur pour le module de gestion de la base de données du package th2product.
+#' @description Logique serveur pour le module de gestion de la base de données du package th2dbm.
 #'
 #' Ce module serveur gère la logique des tâches de gestion de la base de données telles que la création de nouvelles tables,
 #' la suppression de tables, la mise à jour des métadonnées des tables et la gestion des entrées des colonnes. Il utilise
@@ -190,7 +190,7 @@ mod_th2_database_management_server <-
       observe({
         req(input$table_name_del)
         target_table <<- input$table_name_del
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
 
         )
         shinyalert::shinyalert(
@@ -215,7 +215,7 @@ mod_th2_database_management_server <-
               label_text <- "Entry successfully deleted"
 
               mod_refresh_file %>% saveRDS(object = Sys.time(), file = .)
-              th2product::th_shinyalert(
+              th2dbm::th_shinyalert(
                 title = "Delete Entry",
                 confirmButtonCol = "#013DFF",
                 text = label_text,
@@ -256,7 +256,7 @@ mod_th2_database_management_server <-
         DBI::dbDisconnect(db_con)
 
         if (nrow(search_query) != 0 & action == "create") {
-          th2product::th_shinyalert(
+          th2dbm::th_shinyalert(
             title = glue::glue("La table {input$table_name} existe déjà!"),
             confirmButtonCol = "#013DFF",
             text = "",
@@ -281,7 +281,7 @@ mod_th2_database_management_server <-
 
         # Si au moins un VAR_ID correspond, afficher un message
         if (length(matched_ids) > 0) {
-          th2product::th_shinyalert(
+          th2dbm::th_shinyalert(
             title = glue("Les VAR_ID suivants de test_fields existent dans search_query : {paste(matched_ids, collapse = ', ')}"),
             text = "",
             confirmButtonCol = "#013DFF",
@@ -309,7 +309,7 @@ mod_th2_database_management_server <-
 
           add_entry_to_table(new_entry = permissions_value, target_table = "th2_ml_permissions")
         }
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = glue::glue("La table {input$table_name} créé avec succès!"),
           text = "",
           confirmButtonCol = "#013DFF",

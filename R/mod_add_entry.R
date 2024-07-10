@@ -218,7 +218,7 @@ mod_th2new_entry_server <- function(id, db_meta = list(
         remove_shiny_inputs(id = id, .input = input)
         refresh_file %>% saveRDS(object = Sys.time(), file = .)
         removeModal()
-        th2product::th_shinyalert(title = "New Entry",
+        th2dbm::th_shinyalert(title = "New Entry",
                                   text = glue::glue(response$message),
                                   confirmButtonCol = "#013DFF",
                                   type = response$status)

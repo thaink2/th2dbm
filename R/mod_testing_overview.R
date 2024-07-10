@@ -92,7 +92,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
 
     observeEvent(input$add_test_entry, {
       if (!have_permission_to_manage(target_object = target_table)) {
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
           text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à ajouter une entrée à la table '{target_table}'"), type = "error"
@@ -137,7 +137,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
       {
         req(use_db_table())
         if (!have_permission_to_see(target_object = target_table)) {
-          th2product::th_shinyalert(
+          th2dbm::th_shinyalert(
             title = "Permission warning",
             confirmButtonCol = "#013DFF",
             text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à voir la table '{target_table}'"), type = "error"
@@ -156,7 +156,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
         target_table <- input$change_target_table
       }
       if (!have_permission_to_edit(target_object = target_table)) {
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
           text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à modifier la table '{target_table}'"), type = "error"

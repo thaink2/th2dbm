@@ -41,7 +41,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
 
     observeEvent(input$add_test_entry, {
       if (!have_permission_to_manage(target_object = target_table)) {
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
           text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à ajouter une entrée à la table '{target_table}'"), type = "error"
@@ -64,7 +64,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
       {
         req(tester_table())
         if (!have_permission_to_see(target_object = target_table)) {
-          th2product::th_shinyalert(
+          th2dbm::th_shinyalert(
             title = "Permission warning",
             confirmButtonCol = "#013DFF",
             text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à voir la table '{target_table}'"), type = "error"
@@ -81,7 +81,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
 
     observeEvent(input$use_db_table_dt_rows_selected, {
       if (!have_permission_to_edit(target_object = target_table)) {
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
           text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à modifier la table '{target_table}'"), type = "error"
@@ -130,36 +130,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
       # Traiter chaque entrée expirée
       if (!alert_shown()) { # Vérifier s'il y a des entrées expirées et si l'alerte n'a pas été affichée
         alert_shown(TRUE)
-        # for(i in seq_len(nrow(expired_entries))) {
-        #   shinyToastify::showToast(
-        #     session,
-        #     input,
-        #     text = sprintf("Produit : %s, Assigné à : %s, Date d'expiration : %s",
-        #                    expired_entries$PRODUCT[i],
-        #                    expired_entries$USER_MAIL[i],
-        #                    expired_entries$EXPIRATION_DATE[i]),
-        #     type = "warning",
-        #     position = "top-right",
-        #     transition = "slide",
-        #   )
-        # }
-        # Envoyer un email pour chaque produit expiré
-
-        # th2utils::send_email_notification(
-        #   recipient = "malik.senouci@thaink2.com",
-        #   subject = "Date d'expiration de beta tester",
-        #   body = body
-        # )
-        #
-        #
-        # # Afficher une seule alerte (ou modifier selon les besoins pour plusieurs alertes)
-        # shinyalert::shinyalert(
-        #   title = "Date(s) d'expiration atteinte(s)",
-        #   confirmButtonCol = "#013DFF",
-        #   text = glue::glue("Attention : des dates d'expiration de test sont arrivées à leur terme."),
-        #   type = "error"
-        # )
-      }
+       }
     })
   })
 }

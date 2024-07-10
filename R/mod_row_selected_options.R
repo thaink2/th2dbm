@@ -41,7 +41,7 @@ mod_row_selected_options_server <- function(id, target_table = "test_table", cur
 
     observeEvent(input$delete_selected_row, {
       if (!have_permission_to_manage(target_object = target_table)) {
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
           text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à supprimer une entrée de la table '{target_table}'"), type = "error"
@@ -71,7 +71,7 @@ mod_row_selected_options_server <- function(id, target_table = "test_table", cur
           if (isTRUE(value)) {
             label_text <- delete_entry_in_table(target_table = target_table, unique_id_col = id_col, unique_id_val = target_row[1, id_col])
             refresh_file %>% saveRDS(object = Sys.time(), file = .)
-            th2product::th_shinyalert(title = "Delete Entry", text = label_text, type = "success")
+            th2dbm::th_shinyalert(title = "Delete Entry", text = label_text, type = "success")
             removeModal()
           } else {
             removeModal()

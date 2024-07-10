@@ -79,7 +79,7 @@ mod_update_metadata_server <-
       observeEvent(input$save_button, {
         db_con <- connect_to_database()
         if (!file.exists(c_ids)) {
-          th2product::th_shinyalert(
+          th2dbm::th_shinyalert(
             title = glue::glue("Le fichier CSV {c_ids} n'existe pas"),
             text = "",
             confirmButtonCol = "#013DFF",
@@ -91,7 +91,7 @@ mod_update_metadata_server <-
 
         bd_response <- create_update_metadata(table_metadata = test_fields_type, action_table = "update")
 
-        th2product::th_shinyalert(
+        th2dbm::th_shinyalert(
           title = glue::glue("La table {input$table_name} mise à jour avec succès!"),
           text = "",
           confirmButtonCol = "#013DFF",
