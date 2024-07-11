@@ -125,7 +125,6 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
         ))
       }
       body <- paste(body, "</ul>")
-
       # Traiter chaque entrée expirée
       if (!alert_shown()) { # Vérifier s'il y a des entrées expirées et si l'alerte n'a pas été affichée
         alert_shown(TRUE)

@@ -3,7 +3,7 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
-#' @noRd
+#' @export
 app_ui <- function(request) {
   tagList(
     # Logique de l'interface utilisateur de l'application

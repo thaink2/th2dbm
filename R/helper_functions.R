@@ -1,6 +1,11 @@
 #' th_shinyalert
 #' @export
-th_shinyalert <- function(title, text, type = "info", confirmButtonCol = "#013DFF", html = FALSE, imageUrl = "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png") {
+th_shinyalert <- function(title,
+                          text,
+                          type = "info",
+                          confirmButtonCol = "#013DFF",
+                          html = FALSE,
+                          imageUrl = "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png") {
   shinyalert::shinyalert(
     title = title,
     text = text,

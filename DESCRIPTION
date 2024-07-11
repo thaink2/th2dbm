@@ -27,5 +27,6 @@ Imports:
     shinyDatetimePickers,
     sodium,
     testthat,
-    tidyr
+    tidyr,
+    uuid
 Config/testthat/edition: 3
