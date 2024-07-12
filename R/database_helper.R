@@ -763,41 +763,6 @@ delete_data_from_db <- function(table, filter = list()) {
 }
 
 
-# ==============================================================================
-#' Ajouter une Entrée à une Table
-#'
-#' Ajoute une nouvelle entrée à une table spécifique dans la base de données.
-#'
-#' @param new_entry Data frame contenant les nouvelles entrées à ajouter.
-#' @param target_table Nom de la table cible où ajouter les nouvelles entrées.
-#' @export
-add_entry_to_table_v2 <- function(new_entry = NULL, target_table = NULL) {
-  # Vérification que les paramètres ne sont pas NULL
-  if (is.null(new_entry) || is.null(target_table)) {
-    return(list(message = "Les paramètres 'new_entry' et 'target_table' ne doivent pas être NULL.", status = "error"))
-  }
-  # Connexion à la base de données
-  db_con <- connect_to_database(extended_types = TRUE)
-
-  tryCatch(
-    {
-      df <- as.data.frame(t(new_entry))
-      df <- df %>%
-        dplyr::mutate(split_train_test = as.Date.character(split_train_test, format = "%Y-%m-%d"))
-      DBI::dbWriteTable(db_con, name = target_table, value = df, append = TRUE, row.names = FALSE)
-    },
-    error = function(e) {
-      print(paste("Error in dbWriteTable:", e))
-    }
-  )
-
-  # Ajout de la nouvelle entrée à la table
-
-  # Fermeture de la connexion
-  DBI::dbDisconnect(db_con)
-  return(list(message = "Nouvelle entrée ajoutée avec succès.", status = "success"))
-}
-
 
 
 # ==============================================================================
