@@ -24,12 +24,7 @@ Recently we have decided to make the GUI as an open source package
 
 ## On Local: on your browser using webR
 
-```{r, echo=TRUE, include=FALSE}
-
 install.packages("shinylive")
-
-```
-
 
 
 
