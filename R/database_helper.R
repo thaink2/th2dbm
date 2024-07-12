@@ -12,7 +12,6 @@
 #' @export
 initialize_database <- function(target_table = "th2metadata_table",
                                 working_mode = "Dev", file_path = "./R/initializer.R", cluster = "aws") {
-
   aws_db_con <- connect_to_database()
   # Établir connexion à la base de données
   db_con <- connect_to_database()
