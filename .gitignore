@@ -3,3 +3,7 @@
 .RData
 .Ruserdata
 /man
+/R/initialize_db_configs.R
+/refresh
+/site
+/myapp

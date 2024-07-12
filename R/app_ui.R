@@ -24,22 +24,11 @@ app_ui <- function(request) {
             bs4Dash::bs4SidebarMenuSubItem("View Table", tabName = "view_db_table", icon = shiny::icon("eye"))
           ),
           bs4Dash::bs4SidebarMenuItem(
-            "Release Manager",
-            icon = shiny::icon("gauge"),
-            tabName = "release_management",
+            "Data Handler",
+            icon = shiny::icon("table"),
+            tabName = "data_handler",
             startExpanded = TRUE,
-            bs4Dash::bs4SidebarMenuSubItem("Testing", tabName = "manage_testing", icon = shiny::icon("flask")),
-            bs4Dash::bs4SidebarMenuSubItem("Beta tester", tabName = "manage_beta_tester", icon = shiny::icon("flask")),
-            bs4Dash::bs4SidebarMenuSubItem("Versionning", tabName = "manage_versions", icon = shiny::icon("cube")),
-            bs4Dash::bs4SidebarMenuSubItem("Apps", tabName = "manage_apps", icon = shiny::icon("desktop"))
-          ),
-          bs4Dash::bs4SidebarMenuItem(
-            "Reports Manager",
-            icon = shiny::icon("folder-open"),
-            tabName = "repports_management",
-            startExpanded = TRUE,
-            bs4Dash::bs4SidebarMenuSubItem("List files", tabName = "list_files", icon = shiny::icon("file")),
-            bs4Dash::bs4SidebarMenuSubItem("Generate files", tabName = "gen_files", icon = shiny::icon("sync"))
+            bs4Dash::bs4SidebarMenuSubItem("Testing", tabName = "manage_testing", icon = shiny::icon("flask"))
           )
         )
       ),

@@ -28,13 +28,9 @@ prepare_app_header <- function() {
   bs4Dash::bs4DashNavbar(
     skin = "light",
     title = bs4Dash::bs4DashBrand(
-      title = "fairML"
+      title = "th2dbm"
     ),
     rightUi = shiny::tagList(
-      # shiny::tags$li(class = "nav-item dropdown",
-      #                shiny::tags$a(href = "https://www.thaink2.com/",
-      #                              target = "_blank",
-      #                              shiny::tags$img(src = app_logo, height = "30px"), " Thaink2 Home")),
       shiny::tags$li(
         class = "nav-item dropdown",
         shiny::tags$a(
