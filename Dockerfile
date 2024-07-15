@@ -1,6 +1,20 @@
 FROM rocker/r-ver:4.3.2
 RUN mkdir -p /usr/local/lib/R/etc/ /usr/lib/R/etc/
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', Ncpus = 4)" | tee /usr/local/lib/R/etc/Rprofile.site | tee /usr/lib/R/etc/Rprofile.site
+
+RUN apt-get update --fix-missing -qq && apt-get install -y -q \
+       libsodium-dev \
+       libssl-dev \
+       libcurl4-gnutls-dev \
+       libgit2-dev \
+       unixodbc-dev\
+       unixodbc \
+       odbcinst1debian2 \
+       odbcinst \
+    && apt-get clean \
+    && apt-get purge \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 RUN R -e 'install.packages("remotes")'
 RUN Rscript -e 'remotes::install_version("glue",upgrade="never", version = "1.7.0")'
 RUN Rscript -e 'remotes::install_version("magrittr",upgrade="never", version = "2.0.3")'
