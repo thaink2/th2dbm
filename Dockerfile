@@ -15,6 +15,14 @@ RUN apt-get update --fix-missing -qq && apt-get install -y -q \
     && apt-get purge \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Install java and rJava
+RUN apt-get -y update && apt-get install -y \
+   default-jdk \
+   r-cran-rjava \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/
+
+
 RUN R -e 'install.packages("remotes")'
 RUN Rscript -e 'remotes::install_version("glue",upgrade="never", version = "1.7.0")'
 RUN Rscript -e 'remotes::install_version("magrittr",upgrade="never", version = "2.0.3")'
@@ -23,7 +31,7 @@ RUN Rscript -e 'remotes::install_version("dplyr",upgrade="never", version = "1.1
 RUN Rscript -e 'remotes::install_version("DBI",upgrade="never", version = "1.2.1")'
 RUN Rscript -e 'remotes::install_version("shiny",upgrade="never", version = "1.8.0")'
 RUN Rscript -e 'remotes::install_version("uuid",upgrade="never", version = "1.2-0")'
-RUN Rscript -e 'remotes::install_version("testthat",upgrade="never", version = "3.2.1")'
+# RUN Rscript -e 'remotes::install_version("testthat",upgrade="never", version = "3.2.1")'
 RUN Rscript -e 'remotes::install_version("sodium",upgrade="never", version = "1.3.1")'
 RUN Rscript -e 'remotes::install_version("shinyDatetimePickers",upgrade="never", version = "1.1.0")'
 RUN Rscript -e 'remotes::install_version("shinyalert",upgrade="never", version = "3.0.0")'
