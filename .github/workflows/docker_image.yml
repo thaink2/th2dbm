@@ -10,6 +10,10 @@
 name: Publish Docker image
 
 on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
   release:
     types: [published]
 
