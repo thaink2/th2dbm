@@ -84,7 +84,7 @@ mod_col_bloc_server <- function(id, tab_name = "test_table",
     observeEvent(columns_infos(), {
       # Lire ou initialiser le dataframe
       if (file.exists(c_ids)) {
-        columns_df <- read.csv(c_ids, stringsAsFactors = FALSE)
+        columns_df <- readr::read_csv(c_ids)
       } else {
         if (!is.null(meta$col_id)) indice <- meta$col_id
         columns_df <- data.frame(TH2DB_TABLE = tab_name, VAR_ID = "", VAR_TYPE = "", VAR_UNIQUE = "", COLUMN_ID = indice, COLUMN_CHOICES = "", CHOOSE_FROM_TABLE = "", CHOOSE_FROM_VAR = "", stringsAsFactors = FALSE)
@@ -110,7 +110,7 @@ mod_col_bloc_server <- function(id, tab_name = "test_table",
       }
 
       # Écrire le dataframe mis à jour dans le fichier CSV
-      write.csv(columns_df, c_ids, row.names = FALSE)
+      readr::write_csv(x = columns_df, file = c_ids)
     })
   })
 }

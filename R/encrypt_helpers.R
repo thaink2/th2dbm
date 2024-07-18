@@ -43,10 +43,6 @@ encrypt_column <- function(column, key = Sys.getenv("ENCRYPT_PASS")) {
 #' @param column Colonne de données à déchiffrer.
 #' @param key Clé de déchiffrement hexadécimale utilisée pour le déchiffrement. Si non spécifiée, utilise `ENCRYPT_PASS` de l'environnement.
 #' @return Une colonne avec les valeurs déchiffrées.
-#' @examples
-#' # Assurez-vous que la bibliothèque sodium est installée et disponible
-#' encrypted_data <- c("YourEncryptedDataHere")
-#' decrypted_data <- decrypt_column(encrypted_data)
 #' @export
 decrypt_column <- function(column, key = Sys.getenv("ENCRYPT_PASS")) {
   raw_key <- hex2raw(key)

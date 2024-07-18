@@ -4,7 +4,7 @@
 #'
 #' @param target_table Nom de la table cible dans la base de données où les permissions sont stockées.
 #' @param meta Liste contenant les métadonnées pour l'accès accordé, telles que l'ID de l'objet, l'utilisateur courant, les utilisateurs autorisés, le type d'objet et le niveau de permission.
-#' @param permission_action Action de permission à effectuer ("grant" pour accorder, "delete" pour supprimer, "get" pour obtenir les permissions existantes).
+#' @param permission_action Action de permission a effectuer ("grant" pour accorder, "delete" pour supprimer, "get" pour obtenir les permissions existantes).
 #' @description Cette fonction permet de gérer les permissions pour les modèles ou applications de machine learning au sein d'une base de données.
 #' @export
 grant_ml_permission_db <-
@@ -109,7 +109,7 @@ grant_ml_permission_db <-
       if (is.null(meta$current_user)) {
         meta$current_user <- current_object %>%
           dplyr::pull(OBJECT_CREATOR) %>%
-          head(1)
+          utils::head(1)
       }
       can_grant <- TRUE
       are_owners <- FALSE
@@ -157,7 +157,6 @@ grant_ml_permission_db <-
           current_object <- current_object %>%
             dplyr::bind_rows(new_users_perm)
         }
-        c_object <<- new_users_perm
 
         create_update_ml_permissions(table_metadata = current_object, target_table = target_table)
 
@@ -167,10 +166,10 @@ grant_ml_permission_db <-
           permission_data = new_users_perm$OBJECT_ID,
           template_name = "permission_notification"
         )
-        return(glue::glue("Permission à {meta$current_PERMITTED_USERS} accordé!"))
+        return(glue::glue("Permissions to {meta$current_PERMITTED_USERS} granted"))
       } else {
         return(glue::glue(
-          "Permission à {meta$current_PERMITTED_USERS} non accordé!"
+          "Permissions to {meta$current_PERMITTED_USERS} not granted"
         ))
       }
     }
@@ -217,8 +216,6 @@ delete_ml_permissions <-
     query_statement <-
       glue::glue("DELETE FROM {target_table} WHERE OBJECT_ID = '{OBJECT_ID_to_del}'")
     query_res <- DBI::dbExecute(db_con, statement = query_statement)
-
-    # metadata2 <<- table_metadata
     DBI::dbDisconnect(db_con)
     print("Permission deleted!")
     return(query_res)
@@ -232,7 +229,7 @@ delete_ml_permissions <-
 #'
 #' @param target_table The name of the target table containing permissions. Default is "th2_wf_permissions".
 #' @param user The username for which the permission profile is being generated. Default is the username retrieved from the environment variable "SHINYPROXY_USERNAME".
-#'
+#' @param object_type ml , data, or report
 #' @return A list containing various permission flags and lists based on the user's permissions:
 #' \itemize{
 #'   \item \code{can_create_wf}: Indicates whether the user has permission to create workflows.
@@ -242,7 +239,6 @@ delete_ml_permissions <-
 #'   \item \code{list_delete}: A list of workflows the user has permission to delete.
 #'   \item \code{can_access_module}: Indicates whether the user has permission to access the module, based on their view permissions or ability to create workflows.
 #' }
-#'
 #' @export
 build_user_permission_wf_profile <-
   function(target_table = "th2_wf_permissions",

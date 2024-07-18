@@ -43,7 +43,7 @@ mod_update_metadata_server <-
       output$columns_id <- renderUI({
         vars_table_metadata <- vars_table_metadata(current_target_table = input$table_name)
         req(vars_table_metadata)
-        vars_table <<- vars_table_metadata
+        vars_table <- vars_table_metadata
         colnames(vars_table) <- toupper(colnames(vars_table))
         temp <- 1:nrow(vars_table)
         columns_id <- lapply(temp, function(x) {
@@ -87,12 +87,12 @@ mod_update_metadata_server <-
           )
           return(NULL)
         }
-        test_fields_type <<- read.csv(c_ids, stringsAsFactors = FALSE)
+        test_fields_type <- readr::read_csv(c_ids)
 
         bd_response <- create_update_metadata(table_metadata = test_fields_type, action_table = "update")
 
         th2dbm::th_shinyalert(
-          title = glue::glue("La table {input$table_name} mise à jour avec succès!"),
+          title = glue::glue("{input$table_name} created successfully"),
           text = "",
           confirmButtonCol = "#013DFF",
           type = "success"

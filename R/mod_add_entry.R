@@ -154,7 +154,7 @@ mod_th2new_entry_server <- function(id, db_meta = list(
           current_row_type <- metadata[x, "VAR_TYPE"]
           current_row_value <- current_row[1, metadata[x, "VAR_ID"]]
           if (current_row_type == "date_time") {
-            current_row_value <<- paste(as.POSIXct(as.numeric(current_row_value)))
+            current_row_value <- paste(as.POSIXct(as.numeric(current_row_value)))
           }
 
           mod_th2_entry_server(
@@ -196,13 +196,13 @@ mod_th2new_entry_server <- function(id, db_meta = list(
     observeEvent(input$save_update_entries,
       {
         if (target_table == "data_connection_params") {
-          entry_values_df <<- data.frame(entry_values())
+          entry_values_df <- data.frame(entry_values())
           cols_to_encrypt <- names(entry_values_df)[grepl("^PARAM", names(entry_values_df))]
           entry_values_df[cols_to_encrypt] <- lapply(entry_values_df[cols_to_encrypt], encrypt_column)
         } else {
           entry_values_df <- data.frame(entry_values())
         }
-        entry_value_encrypt <<- entry_values_df
+        entry_value_encrypt <- entry_values_df
 
         if (is.null(db_meta$target_row) || nrow(db_meta$target_row) == 0) {
           response <- add_entry_to_table(new_entry = entry_values_df, target_table = db_meta$target_table)
@@ -215,7 +215,7 @@ mod_th2new_entry_server <- function(id, db_meta = list(
           ) # fonction qui est dans database_helper
         }
         remove_shiny_inputs(id = id, .input = input)
-        refresh_file %>% saveRDS(object = Sys.time(), file = .)
+        saveRDS(object = Sys.time(), file = refresh_file)
         removeModal()
         th2dbm::th_shinyalert(
           title = "New Entry",

@@ -189,10 +189,10 @@ mod_th2_database_management_server <-
 
       observe({
         req(input$table_name_del)
-        target_table <<- input$table_name_del
+        target_table <- input$table_name_del
         th2dbm::th_shinyalert()
         shinyalert::shinyalert(
-          text = glue::glue("Êtes-vous sûr de vouloir supprimer la table {target_table} ?"),
+          text = glue::glue("Confirm deletion of {target_table} table ?"),
           title = "Confirmation de suppression",
           type = "warning",
           closeOnClickOutside = TRUE,
@@ -212,7 +212,7 @@ mod_th2_database_management_server <-
               DBI::dbDisconnect(db_con)
               label_text <- "Entry successfully deleted"
 
-              mod_refresh_file %>% saveRDS(object = Sys.time(), file = .)
+              saveRDS(object = Sys.time(), file = mod_refresh_file)
               th2dbm::th_shinyalert(
                 title = "Delete Entry",
                 confirmButtonCol = "#013DFF",
@@ -254,16 +254,16 @@ mod_th2_database_management_server <-
 
         if (nrow(search_query) != 0 & action == "create") {
           th2dbm::th_shinyalert(
-            title = glue::glue("La table {input$table_name} existe déjà!"),
+            title = glue::glue("{input$table_name} table already exists !"),
             confirmButtonCol = "#013DFF",
             text = "",
             type = "error"
           )
 
           removeModal()
-          return("Cette table existe déjà!")
+          return("table already exists !")
         }
-        test_fields_type <- read.csv(c_ids, stringsAsFactors = FALSE)
+        test_fields_type <- readr::read_csv(c_ids)
 
         if (!"COL_ID" %in% search_query$var_id) {
           id_entry <- data.frame(
@@ -294,7 +294,7 @@ mod_th2_database_management_server <-
 
         colnames(test_fields_type) <- toupper(colnames(test_fields_type))
 
-        test_fields <<- test_fields_type
+        test_fields <- test_fields_type
         bd_response <- create_update_metadata(table_metadata = test_fields_type, action_table = action)
 
         if (input$table_name != "th2_ml_permissions") {
@@ -307,7 +307,7 @@ mod_th2_database_management_server <-
           add_entry_to_table(new_entry = permissions_value, target_table = "th2_ml_permissions")
         }
         th2dbm::th_shinyalert(
-          title = glue::glue("La table {input$table_name} créé avec succès!"),
+          title = glue::glue("{input$table_name} created successfully"),
           text = "",
           confirmButtonCol = "#013DFF",
           type = "success"

@@ -44,7 +44,7 @@ mod_row_selected_options_server <- function(id, target_table = "test_table", cur
         th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
-          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à supprimer une entrée de la table '{target_table}'"), type = "error"
+          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}  you are not authorized to add new entry into '{target_table}'"), type = "error"
         )
 
         return(NULL)
@@ -57,7 +57,7 @@ mod_row_selected_options_server <- function(id, target_table = "test_table", cur
       }
       # Afficher une boîte de dialogue de confirmation avant de supprimer
       shinyalert::shinyalert(
-        text = "Êtes-vous sûr de vouloir supprimer cette entrée ?",
+        text = "Confirm deletion of this entry ?",
         title = "Confirmation de suppression",
         type = "warning",
         closeOnClickOutside = TRUE,

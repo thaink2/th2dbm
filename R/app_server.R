@@ -33,13 +33,5 @@ app_server <- function(input, output, session) {
   mod_beta_tester_manage_server(id = "beta_tester", target_table = "beta_tester_table")
   observeEvent(input$controlbar, {
     mod_change_current_user_ui("user")
-    # if (input$controlbar) {
-    #   showModal(modalDialog(
-    #     title = "Alert",
-    #     "The controlbar is opened.",
-    #     easyClose = TRUE,
-    #     footer = NULL
-    #   ))
-    # }
   })
 }

@@ -36,13 +36,13 @@ mod_csv_to_db_server <- function(id) {
 
       if (nrow(search_query) != 0) {
         th2dbm::th_shinyalert(
-          title = glue::glue("La table {input$table_name} existe déjà!"),
+          title = glue::glue("{input$table_name} table already exists !"),
           confirmButtonCol = "#013DFF",
           text = "", type = "error"
         )
 
         removeModal()
-        return("Cette table existe déjà!")
+        return("Table already exists")
       }
       # Remplacer '0' suivi de n'importe quelle extension par 'file_name' suivi de la même extension
       partie_avant_0 <- sub("/0.*", "/", file_path)
@@ -60,7 +60,7 @@ mod_csv_to_db_server <- function(id) {
 
 
 
-      table_df <- read.csv(file_path, stringsAsFactors = FALSE)
+      table_df <- readr::read_csv(file_path)
 
       colnames(table_df) <- toupper(colnames(table_df))
 
@@ -85,7 +85,7 @@ mod_csv_to_db_server <- function(id) {
 
       removeModal()
       th2dbm::th_shinyalert(
-        title = glue::glue("La table {input$table_name} créé avec succès!"),
+        title = glue::glue("{input$table_name} created successfully"),
         text = "",
         confirmButtonCol = "#013DFF",
         type = "success"

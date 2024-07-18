@@ -46,7 +46,7 @@ initialize_database <- function(target_table = "th2metadata_table",
 
     # Fonction pour créer la table avec sa structure uniquement
     create_table_structure <- function(con, table_name, columns) {
-      # Vérifier si la table existe déjà
+      # check if it already exists
 
       columns_sql <- paste(sapply(seq_len(nrow(columns)), function(i) {
         col <- columns[i, ]
@@ -109,7 +109,7 @@ copy_table <- function(db_source, db_target, target_table) {
   # Lire les données de la table source
   data <- DBI::dbReadTable(db_source, target_table)
 
-  # Vérifier si la table existe déjà dans la base de données cible
+  # check if it already exists in the database
   table_exists <- DBI::dbExistsTable(db_target, target_table)
 
   if (table_exists) {
@@ -178,9 +178,7 @@ th2_install_db_drivers <- function(jdbcs_drivers_path = NULL, db_type = "all") {
 #'
 #' @param db_type Type de la base de données à connecter, utilise une variable
 #'                d'environnement par défaut pour déterminer le type.
-#' @param db_params Liste des paramètres de connexion à la base de données,
-#'                  incluant l'hôte, le nom de la base de données, le mot de
-#'                  passe, etc.
+#' @param db_params list of parameters used to establish connection to database
 #' @param db_file_name Nom de fichier pour les connexions à la base de données
 #'                     SQLite, utilise une variable d'environnement par défaut.
 #' @export
@@ -305,11 +303,8 @@ retrieve_table_data <- function(db_con = connect_to_database(), table_name = NUL
   return(data)
 }
 
-# ==============================================================================
-#' Métadonnées de la Table des Variables
-#'
-#' Récupère les métadonnées pour une table de variables spécifique.
-#'
+#' vars_table_metadata
+#' @param db_con database connection object
 #' @param current_target_table Nom de la table cible pour laquelle récupérer les métadonnées.
 #' @export
 vars_table_metadata <- function(db_con = connect_to_database(), current_target_table = "test_table") {
@@ -317,7 +312,7 @@ vars_table_metadata <- function(db_con = connect_to_database(), current_target_t
   available_tables <- DBI::dbListTables(conn = db_con)
   if (!"th2metadata_table" %in% available_tables) {
     DBI::dbDisconnect(db_con)
-    stop("La table 'th2metadata_table' n'existe pas dans la base de données.")
+    stop(" 'th2metadata_table' does not exist in database.")
   }
 
   # Construction et exécution de la requête SQL pour récupérer les métadonnées
@@ -382,7 +377,7 @@ current_permission_table <- function() {
 add_entry_to_table <- function(new_entry = NULL, target_table = NULL) {
   # Vérification que les paramètres ne sont pas NULL
   if (is.null(new_entry) || is.null(target_table)) {
-    return(list(message = "Les paramètres 'new_entry' et 'target_table' ne doivent pas être NULL.", status = "error"))
+    return(list(message = "Parameters 'new_entry' and  'target_table' cannot be  NULL.", status = "error"))
   }
 
   # Ajout d'un ID unique si nécessaire
@@ -398,7 +393,7 @@ add_entry_to_table <- function(new_entry = NULL, target_table = NULL) {
   available_tables <- DBI::dbListTables(conn = db_con)
   if (!target_table %in% available_tables) {
     DBI::dbDisconnect(db_con)
-    return(list(message = "La table {target_table} n'existe pas dans la base de données.", status = "error"))
+    return(list(message = "{target_table} table does not exist in database", status = "error"))
   }
 
   query_statement <- glue::glue("SELECT VAR_ID FROM th2metadata_table WHERE TH2DB_TABLE = '{target_table}' AND VAR_UNIQUE = 'true' ")
@@ -420,7 +415,7 @@ add_entry_to_table <- function(new_entry = NULL, target_table = NULL) {
 
     if (length(values) > 0) {
       # DBI::dbDisconnect(db_con)
-      return(list(message = glue::glue("{paste(values, collapse = ', ')} existe déjà."), status = "error"))
+      return(list(message = glue::glue("{paste(values, collapse = ', ')} already exists."), status = "error"))
     }
   }
   # Ajout de la nouvelle entrée à la table
@@ -428,15 +423,12 @@ add_entry_to_table <- function(new_entry = NULL, target_table = NULL) {
 
   # Fermeture de la connexion
   DBI::dbDisconnect(db_con)
-  return(list(message = "Nouvelle entrée ajoutée avec succès.", status = "success"))
+  return(list(message = "New entry added successfully.", status = "success"))
 }
 
 
 # ==============================================================================
-#' Mettre à Jour une Entrée dans une Table
-#'
-#' Met à jour une entrée spécifique dans une table de la base de données.
-#'
+#' update_entry_in_table
 #' @param updated_entry Data frame contenant les données mises à jour.
 #' @param target_table Nom de la table où effectuer la mise à jour.
 #' @param unique_id_col Nom de la colonne contenant l'identifiant unique.
@@ -444,7 +436,7 @@ add_entry_to_table <- function(new_entry = NULL, target_table = NULL) {
 #' @export
 update_entry_in_table <- function(updated_entry = NULL, target_table = NULL,
                                   unique_id_col = NULL, unique_id_val = NULL) {
-  # Vérification que tous les paramètres requis sont fournis
+  # make sure that all parameters are provided
   if (is.null(updated_entry) || is.null(target_table) ||
     is.null(unique_id_col) || is.null(unique_id_val)) {
     stop("Missing required parameter")
@@ -495,7 +487,7 @@ update_entry_in_table <- function(updated_entry = NULL, target_table = NULL,
 #' @export
 delete_entry_in_table <- function(target_table = NULL, unique_id_col = NULL,
                                   unique_id_val = NULL) {
-  # Vérification des paramètres requis
+  # check if all parameters are provided
   if (is.null(target_table) || is.null(unique_id_col) || is.null(unique_id_val)) {
     stop("Missing required parameter")
   }
@@ -530,19 +522,12 @@ supprimer_lignes_vides <- function(nom_table, nom_colonne) {
   # Exécuter la requête
   DBI::dbExecute(conn, requete)
   DBI::dbDisconnect(conn)
-  # Retourner un message de succès (ou vous pouvez choisir de retourner le nombre de lignes affectées)
-  paste("Les lignes avec des cellules vides dans la colonne", nom_colonne, "ont été supprimées.")
+  paste("Rows with empty cells in column ", nom_colonne, "have been deleted.")
 }
 
-# ==============================================================================
-#' Ajouter des Paramètres de Connexion à la Base de Données
-#'
-#' Ajoute des paramètres de connexion pour une source de données spécifique
-#' dans la base de données.
-#'
-#' @param params_list Liste des paramètres de connexion à enregistrer.
-#' @param meta Informations supplémentaires telles que le nom de la donnée,
-#'             la source de données et le propriétaire.
+#' th2_add_db_connection_params
+#' @param params_list list of parameters to register
+#' @param meta additional metadata information
 #' @import sodium
 #' @export
 th2_add_db_connection_params <- function(params_list = list(), meta = list(
@@ -550,8 +535,8 @@ th2_add_db_connection_params <- function(params_list = list(), meta = list(
                                            data_source = "",
                                            owner = ""
                                          )) {
-  # Préparation des valeurs de paramètres
-  param_values <- setNames(
+  # prepare parameter values
+  param_values <- stats::setNames(
     object = lapply(1:length(params_list), function(x) if (is.null(params_list[[x]])) NA else params_list[[x]]),
     nm = paste0("PARAM", 1:length(params_list))
   )
@@ -610,8 +595,6 @@ th2_add_db_connection_params <- function(params_list = list(), meta = list(
 #'
 #' @return Un dataframe contenant les données récupérées.
 #' @export
-#' @examples
-#' fetch_data_from_db(table = "ma_table", cols = c("id", "nom"), filter = list(id = 1))
 fetch_data_from_db <- function(table = NULL,
                                cols = c(),
                                filter = list()) {
@@ -633,7 +616,7 @@ fetch_data_from_db <- function(table = NULL,
   if (length(filter)) {
     filter_string <-
       paste(names(filter), "=", sapply(filter, function(x) {
-        if (class(x) == "character") {
+        if (as.character(class(x)) == "character") {
           paste0("'", x, "'")
         } else {
           x
@@ -660,8 +643,7 @@ fetch_data_from_db <- function(table = NULL,
 #'
 #' Cette fonction récupère des données d'une table spécifique dans la base de données. Elle permet une sélection optionnelle de colonnes et un filtrage.
 #'
-#' @param sql
-#'
+#' @param sql sql request query
 #' @return Un dataframe contenant les données récupérées.
 #' @export
 fetch_data_from_db_by_sql <- function(sql = NULL) {
@@ -684,8 +666,6 @@ fetch_data_from_db_by_sql <- function(sql = NULL) {
 #'
 #' @return Le nombre de lignes affectées par la mise à jour.
 #' @export
-#' @examples
-#' update_data_in_db(table = "ma_table", updates = list(nom = "Dupont"), filter = list(id = 1))
 update_data_in_db <- function(table, updates = list(), filter = list()) {
   if (is.null(table) || !length(updates)) {
     stop("Both table name and updates are required")
@@ -734,8 +714,6 @@ update_data_in_db <- function(table, updates = list(), filter = list()) {
 #'
 #' @return Le nombre de lignes supprimées.
 #' @export
-#' @examples
-#' delete_data_from_db(table = "ma_table", filter = list(id = 1))
 delete_data_from_db <- function(table, filter = list()) {
   if (is.null(table) || !length(filter)) {
     stop("Both table name and filter are required")
@@ -776,8 +754,6 @@ delete_data_from_db <- function(table, filter = list()) {
 #'
 #' @return Le nombre de lignes affectées.
 #' @export
-#' @examples
-#' update_null_values_in_db(table = "ma_table", column = "ma_colonne", new_value = "valeur_par_defaut")
 update_null_values_in_db <- function(table, column, new_value) {
   if (is.null(table) || is.null(column)) {
     stop("Le nom de la table et de la colonne sont requis")

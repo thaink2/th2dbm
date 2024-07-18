@@ -6,7 +6,7 @@ Author: Farid Azouaou <farid.azouaou@thaink2.com>
 Maintainer: David Gnaglo <david.ganglo@thaink2.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: Apache-2.0
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
@@ -28,5 +28,7 @@ Imports:
     sodium,
     testthat,
     tidyr,
-    uuid
+    uuid,
+    readr,
+    rlang
 Config/testthat/edition: 3

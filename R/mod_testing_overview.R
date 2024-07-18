@@ -95,7 +95,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
         th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
-          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à ajouter une entrée à la table '{target_table}'"), type = "error"
+          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}  you are not authorized to add new entry into '{target_table}'"), type = "error"
         )
 
         return(NULL)
@@ -129,7 +129,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
       content = function(file) {
         data <- use_db_table() %>%
           dplyr::select(-COL_ID, -ID)
-        write.csv(data, file)
+        readr::write_csv(x = data, file = file)
       }
     )
 
@@ -140,7 +140,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
           th2dbm::th_shinyalert(
             title = "Permission warning",
             confirmButtonCol = "#013DFF",
-            text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à voir la table '{target_table}'"), type = "error"
+            text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}  you are not authorized to add new entry into '{target_table}'"), type = "error"
           )
           return(NULL)
         }
@@ -159,7 +159,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
         th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
-          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à modifier la table '{target_table}'"), type = "error"
+          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}  you are not authorized to add new entry into '{target_table}'"), type = "error"
         )
         return(NULL)
       }

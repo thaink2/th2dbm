@@ -1,11 +1,21 @@
 #' th_shinyalert
+#' @param title alert title
+#' @param text text to be displayed under title
+#' @param type info, success, fail
+#' @param html whether tu use html  or not
+#' @param imageUrl image url to be displayed in the alert popup
+#' @param confirmButtonCol color of the confirm button
 #' @export
-th_shinyalert <- function(title,
+th_shinyalert <-
+  function(title,
                           text,
                           type = "info",
                           confirmButtonCol = "#013DFF",
                           html = FALSE,
-                          imageUrl = "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png") {
+                          imageUrl = NULL) {
+  if(is.null(imageUrl)){
+    imageUrl <- "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png"
+  }
   shinyalert::shinyalert(
     title = title,
     text = text,

@@ -32,7 +32,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
       return(test_table)
     })
 
-    alert_shown <- reactiveVal(FALSE) # Initialiser une valeur réactive pour suivre si l'alerte a été affichée
+    alert_shown <- reactiveVal(FALSE) # Initialize a reactive value
 
     output$testing_add_button <- renderUI({
       actionButton(inputId = ns("add_test_entry"), label = "Add entry", icon = icon("plus"))
@@ -44,7 +44,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
         th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
-          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à ajouter une entrée à la table '{target_table}'"), type = "error"
+          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))} you are not authorized to add new entry into '{target_table}'"), type = "error"
         )
 
         return(NULL)
@@ -67,7 +67,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
           th2dbm::th_shinyalert(
             title = "Permission warning",
             confirmButtonCol = "#013DFF",
-            text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à voir la table '{target_table}'"), type = "error"
+            text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))} you are not authorized to add new entry into '{target_table}'"), type = "error"
           )
 
           return(NULL)
@@ -83,7 +83,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
         th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
-          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à modifier la table '{target_table}'"), type = "error"
+          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}  you are not authorized to add new entry into '{target_table}'"), type = "error"
         )
         return(NULL)
       }
@@ -103,7 +103,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
     })
 
     observe({
-      invalidateLater(1000, session) # Rafraîchit la fonction chaque seconde
+      invalidateLater(1000, session) # Rafraichit la fonction chaque seconde
       current_time <- Sys.time()
       tester_data <- tester_table()
 
@@ -111,14 +111,14 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
 
       # S'il n'y a pas d'entrées expirées, arrêtez la fonction
       if (nrow(expired_entries) == 0 || is.null(expired_entries)) {
-        return("Il n'y a pas de produits expirés à notifier.")
+        return("No expired products to notify")
       }
 
-      body <- "<p>Voici la liste des produits dont la date d'expiration est passée :</p>"
+      body <- "<p>Voici la liste des produits dont la date d'expiration est passee :</p>"
       body <- paste(body, "<ul>")
       for (i in seq_len(nrow(expired_entries))) {
         body <- paste(body, sprintf(
-          "<li>Produit : %s, Assigné à : %s, Date d'expiration : %s</li>",
+          "<li>Produit : %s, Assigned to : %s, expiry date : %s</li>",
           expired_entries$PRODUCT[i],
           expired_entries$USER_MAIL[i],
           expired_entries$EXPIRATION_DATE[i]
@@ -126,7 +126,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
       }
       body <- paste(body, "</ul>")
       # Traiter chaque entrée expirée
-      if (!alert_shown()) { # Vérifier s'il y a des entrées expirées et si l'alerte n'a pas été affichée
+      if (!alert_shown()) { # check if entries are expired and if alert is not
         alert_shown(TRUE)
       }
     })

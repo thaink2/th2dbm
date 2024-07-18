@@ -3,3 +3,7 @@
 ^\.dockerignore$
 ^\.github$
 ^codecov\.yml$
+^LICENSE\.md$
+^README.Rmd
+^Dockerfile
+^myapp

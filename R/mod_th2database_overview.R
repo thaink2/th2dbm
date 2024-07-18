@@ -61,7 +61,7 @@ mod_th2db_overview_server <- function(id, target_table = "th2metadata_table", cu
         th2dbm::th_shinyalert(
           title = "Permission warning",
           confirmButtonCol = "#013DFF",
-          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}, Vous n'êtes pas autorisé à modifier la table '{target_table}'"), type = "error"
+          text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}  you are not authorized to add new entry into '{target_table}'"), type = "error"
         )
         return(NULL)
       }
