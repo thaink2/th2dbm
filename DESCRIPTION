@@ -32,3 +32,6 @@ Imports:
     readr,
     rlang
 Config/testthat/edition: 3
+Suggests: 
+    spelling
+Language: en-US
