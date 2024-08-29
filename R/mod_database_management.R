@@ -43,7 +43,7 @@ mod_th2_database_management_ui <- function(id) {
 #' @importFrom glue glue
 
 mod_th2_database_management_server <-
-  function(id, current_user = Sys.getenv("SHINYPROXY_USERNAME"), action = "create") {
+  function(id, current_user = Sys.getenv("SHINYPROXY_USERNAME"), menu_items = NULL, action = "create", mod_refresh_file) {
     moduleServer(id, function(input, output, session) {
       ns <- session$ns
 
@@ -74,7 +74,7 @@ mod_th2_database_management_server <-
 
         actionButton(
           inputId = ns(glue::glue("{action_label}_table")),
-          label = glue::glue("{action_label_Cap} table"),
+          label = glue::glue("{action_label_Cap} table"), style = add_button_theme(),
           icon = icon(action_icon)
         )
       })
@@ -83,7 +83,7 @@ mod_th2_database_management_server <-
         if (action == "create") {
           actionButton(
             inputId = ns(glue::glue("create_table_with_csv")),
-            label = glue::glue("Create table with csv"),
+            label = glue::glue("Create table with csv"), style = add_button_theme(),
             icon = icon("plus")
           )
         }
@@ -190,7 +190,6 @@ mod_th2_database_management_server <-
       observe({
         req(input$table_name_del)
         target_table <- input$table_name_del
-        th2dbm::th_shinyalert()
         shinyalert::shinyalert(
           text = glue::glue("Confirm deletion of {target_table} table ?"),
           title = "Confirmation de suppression",
@@ -211,7 +210,6 @@ mod_th2_database_management_server <-
               DBI::dbExecute(db_con, glue::glue("DROP TABLE IF EXISTS {target_table}"))
               DBI::dbDisconnect(db_con)
               label_text <- "Entry successfully deleted"
-
               saveRDS(object = Sys.time(), file = mod_refresh_file)
               th2dbm::th_shinyalert(
                 title = "Delete Entry",
@@ -220,6 +218,7 @@ mod_th2_database_management_server <-
                 type = "success"
               )
             }
+            saveRDS(object = Sys.time(), file = mod_refresh_file)
             removeModal()
           }
         )
@@ -230,7 +229,7 @@ mod_th2_database_management_server <-
       output$create_table_button <- renderUI({
         req(input$table_num_items, input$table_name)
         actionButton(
-          inputId = ns("save_button"),
+          inputId = ns("save_button"), style = add_button_theme(),
           label = "Save",
           icon = icon("save")
         )
@@ -247,7 +246,6 @@ mod_th2_database_management_server <-
           )
           return(NULL)
         }
-        db_con <- connect_to_database()
         search_query <- sprintf("SELECT * FROM th2metadata_table WHERE TH2DB_TABLE = '%s'", input$table_name)
         search_query <- DBI::dbGetQuery(db_con, search_query)
         DBI::dbDisconnect(db_con)
@@ -263,7 +261,7 @@ mod_th2_database_management_server <-
           removeModal()
           return("table already exists !")
         }
-        test_fields_type <- readr::read_csv(c_ids)
+        test_fields_type <- readr::read_csv(c_ids, col_types = readr::cols(VAR_UNIQUE = readr::col_character()))
 
         if (!"COL_ID" %in% search_query$var_id) {
           id_entry <- data.frame(
@@ -315,6 +313,7 @@ mod_th2_database_management_server <-
 
         file.remove(c_ids)
         # Fermer le modal
+        saveRDS(object = Sys.time(), file = mod_refresh_file)
         removeModal()
       })
     })

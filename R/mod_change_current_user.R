@@ -3,7 +3,7 @@ mod_change_current_user_ui <- function(id) {
   ns <- NS(id)
   fluidPage(
     uiOutput(ns("change_user")),
-    actionButton(inputId = ns("change_user_button"), label = "", icon = icon("sync"))
+    actionButton(inputId = ns("change_user_button"), label = "", style = add_button_theme(), icon = icon("sync"))
   )
 }
 

@@ -6,7 +6,7 @@ mod_update_metadata_ui <- function(id) {
 
 #' @export
 mod_update_metadata_server <-
-  function(id) {
+  function(id, mod_refresh_file) {
     moduleServer(id, function(input, output, session) {
       ns <- session$ns
       c_ids <- "COLUMN_IDs.csv"
@@ -15,7 +15,7 @@ mod_update_metadata_server <-
         actionButton(
           inputId = ns(glue::glue("update_column_btn")),
           label = glue::glue("Update column"),
-          icon = icon("pen")
+          icon = icon("pen"), style = add_button_theme()
         )
       })
 
@@ -71,7 +71,7 @@ mod_update_metadata_server <-
         req(input$table_name)
         actionButton(
           inputId = ns("save_button"),
-          label = "Save",
+          label = "Save", style = add_button_theme(),
           icon = icon("save")
         )
       })
@@ -83,7 +83,7 @@ mod_update_metadata_server <-
             title = glue::glue("Le fichier CSV {c_ids} n'existe pas"),
             text = "",
             confirmButtonCol = "#013DFF",
-            type = "danger"
+            type = "error"
           )
           return(NULL)
         }
@@ -99,6 +99,7 @@ mod_update_metadata_server <-
         )
         file.remove(c_ids)
         # Fermer le modal
+        saveRDS(object = Sys.time(), file = mod_refresh_file)
         removeModal()
       })
     })

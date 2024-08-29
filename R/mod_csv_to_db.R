@@ -21,7 +21,7 @@ mod_csv_to_db_server <- function(id) {
     output$add_button <- renderUI({
       req(input$table_name, input$csv_file)
 
-      actionButton(inputId = ns("add_button"), label = "Add", icon = icon("plus"))
+      actionButton(inputId = ns("add_button"), label = "Add", style = add_button_theme(), icon = icon("plus"))
     })
 
     observeEvent(input$add_button, {
@@ -82,7 +82,6 @@ mod_csv_to_db_server <- function(id) {
 
         add_entry_to_table(new_entry = permissions_value, target_table = "th2_ml_permissions")
       }
-
       removeModal()
       th2dbm::th_shinyalert(
         title = glue::glue("{input$table_name} created successfully"),

@@ -5,7 +5,7 @@ mod_del_col_ui <- function(id) {
 }
 
 #' @export
-mod_update_metadata_server <-
+mod_del_col_server <-
   function(id) {
     moduleServer(id, function(input, output, session) {
       ns <- session$ns

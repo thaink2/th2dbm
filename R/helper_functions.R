@@ -7,25 +7,43 @@
 #' @param confirmButtonCol color of the confirm button
 #' @export
 th_shinyalert <-
-  function(title,
-                          text,
-                          type = "info",
-                          confirmButtonCol = "#013DFF",
-                          html = FALSE,
-                          imageUrl = NULL) {
-  if(is.null(imageUrl)){
-    imageUrl <- "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png"
+  function(title = "",
+           text = "",
+           type = "info",
+           confirmButtonCol = "#013DFF",
+           html = FALSE,
+           imageUrl = NULL) {
+    if (is.null(imageUrl)) {
+      imageUrl <- "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png"
+    }
+    shinyalert::shinyalert(
+      title = title,
+      text = text,
+      type = type,
+      imageUrl = imageUrl,
+      html = html,
+      confirmButtonCol = confirmButtonCol
+    )
   }
-  shinyalert::shinyalert(
-    title = title,
-    text = text,
-    type = type,
-    imageUrl = imageUrl,
-    html = html,
-    confirmButtonCol = confirmButtonCol
-  )
+
+#' @export
+add_button_theme <- function(btn_col = "#fff", background_col = "#013DFF", border_col = "#013DFF") {
+  style <- glue::glue("color: {btn_col}; background-color: {background_col}; border-color: {border_col};
+                                border-radius: 10px;
+                               border-width: 2px")
+  return(style)
 }
 
+#' @export
+th2_download_button <- function(outputId, label = "Download", class = NULL, ..., icon = shiny::icon("download")) {
+  tags$a(
+    id = outputId, class = paste(
+      "btn btn-primary shiny-download-link",
+      class
+    ), href = "", target = "_blank", download = NA,
+    label, ...
+  )
+}
 
 #' Préparer l'En-tête de l'Application
 #'
@@ -33,12 +51,12 @@ th_shinyalert <-
 #'
 #' @return Un objet `dashboardHeader` de `bs4Dash` contenant l'en-tête personnalisé de l'application.
 #' @export
-prepare_app_header <- function() {
-  app_logo <- "https://static.wixstatic.com/media/9aacb8_9886b3a143c2470d96ec76a181e67e49~mv2.png/v1/fill/w_195,h_46,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/thaink2-logo-blue-big.png"
+prepare_app_header <- function(header_title = "thaink²") {
+  app_logo_circle <- "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png"
   bs4Dash::bs4DashNavbar(
     skin = "light",
     title = bs4Dash::bs4DashBrand(
-      title = "th2dbm"
+      title = bs4Dash::bs4DashBrand(title = "th2dbm", image = app_logo_circle)
     ),
     rightUi = shiny::tagList(
       shiny::tags$li(
@@ -52,15 +70,6 @@ prepare_app_header <- function() {
       ),
       shiny::tags$li(
         class = "nav-item dropdown",
-        shiny::tags$a(
-          href = "https://www.thaink2.com/",
-          target = "_blank",
-          class = "nav-link",
-          shiny::tags$img(src = app_logo, style = "height: 30px")
-        )
-      ),
-      shiny::tags$li(
-        class = "nav-item dropdown",
         shiny::actionButton(
           inputId = "user_button",
           label = NULL,
@@ -70,6 +79,31 @@ prepare_app_header <- function() {
       )
     )
   )
+}
+
+#' @export
+load_i18n_translator <- function() {
+  # target_language <- golem::get_golem_options(which = "target_language" )
+  target_language <- SaldaeModulesUI::load_user_default_configs()$target_lang
+  i18n <- shiny.i18n::Translator$new(translation_csvs_path = system.file("translator", package = "SaldaeAnalyticsDashboard"))
+  i18n$set_translation_language(target_language)
+  return(i18n)
+}
+
+#' @importFrom data.table .SD
+#' @export
+dropListColumns <- function(x) {
+  type_col <- vapply(
+    X = x,
+    FUN = typeof,
+    FUN.VALUE = character(1),
+    USE.NAMES = FALSE
+  )
+  if (inherits(x, "data.table")) {
+    x[, .SD, .SDcols = type_col != "list"]
+  } else {
+    x[, type_col != "list", drop = FALSE]
+  }
 }
 
 #' Corriger la Date

@@ -56,7 +56,6 @@ initialize_database <- function(target_table = "th2metadata_table",
       }), collapse = ", ")
 
       create_table_query <- paste0("CREATE TABLE ", table_name, " (", columns_sql, ")")
-      print(create_table_query)
       DBI::dbExecute(con, create_table_query)
     }
     th2metadata_table <- vars_table_metadata(db_con = aws_db_con, current_target_table = "th2metadata_table")
@@ -204,7 +203,6 @@ connect_to_database <- function(
     )
     db_con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_file_name, extended_types = extended_types)
   } else {
-    print(paste("Host:", db_params$host))
     # Construction de la chaîne de connexion pour les bases de données via JDBC
     path_to_drive <- th2_install_db_drivers(jdbcs_drivers_path = path_driver, db_type = db_type)
     data_source_server <- paste0(db_params$host, "/", db_params$database)
@@ -307,7 +305,7 @@ retrieve_table_data <- function(db_con = connect_to_database(), table_name = NUL
 #' @param db_con database connection object
 #' @param current_target_table Nom de la table cible pour laquelle récupérer les métadonnées.
 #' @export
-vars_table_metadata <- function(db_con = connect_to_database(), current_target_table = "test_table") {
+vars_table_metadata <- function(db_con = connect_to_database(), current_target_table = "th2metadata_table") {
   # Vérification de l'existence de la table 'th2metadata_table'
   available_tables <- DBI::dbListTables(conn = db_con)
   if (!"th2metadata_table" %in% available_tables) {
@@ -405,8 +403,6 @@ add_entry_to_table <- function(new_entry = NULL, target_table = NULL) {
 
   if (nrow(primary_keys) > 0) {
     values <- lapply(primary_keys$var_id, function(var_id) {
-      print(var_id)
-      print(var_id != "COL_ID" & any(new_entry[[var_id]] %in% existing_entries[[var_id]]))
       if (var_id != "COL_ID" & any(new_entry[[var_id]] %in% existing_entries[[var_id]])) {
         new_entry[[var_id]]
       }

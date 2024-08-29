@@ -35,7 +35,7 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
     alert_shown <- reactiveVal(FALSE) # Initialize a reactive value
 
     output$testing_add_button <- renderUI({
-      actionButton(inputId = ns("add_test_entry"), label = "Add entry", icon = icon("plus"))
+      actionButton(inputId = ns("add_test_entry"), label = "Add entry", style = add_button_theme(), icon = icon("plus"))
     })
 
 
@@ -63,15 +63,15 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
     output$use_db_table_dt <- DT::renderDataTable(
       {
         req(tester_table())
-        if (!have_permission_to_see(target_object = target_table)) {
-          th2dbm::th_shinyalert(
-            title = "Permission warning",
-            confirmButtonCol = "#013DFF",
-            text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))} you are not authorized to add new entry into '{target_table}'"), type = "error"
-          )
-
-          return(NULL)
-        }
+        # if (!have_permission_to_see(target_object = target_table)) {
+        #   th2dbm::th_shinyalert(
+        #     title = "Permission warning",
+        #     confirmButtonCol = "#013DFF",
+        #     text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))} you are not authorized to add new entry into '{target_table}'"), type = "error"
+        #   )
+        #
+        #   return(NULL)
+        # }
         tester_table() %>%
           prepare_db_table_view(target_table = target_table)
       },
@@ -89,7 +89,6 @@ mod_beta_tester_manage_server <- function(id, target_table = "beta_tester_table"
       }
 
       rows_selected <- input$use_db_table_dt_rows_selected
-      print(rows_selected)
       db_meta_list <- list(target_table = target_table, target_row = tester_table()[rows_selected, ])
       module_id <- generateID(prefix = "update_test_entry")
       mod_row_selected_options_server(module_id, target_table = target_table, target_row = tester_table()[rows_selected, ], refresh_file = mod_refresh_file)

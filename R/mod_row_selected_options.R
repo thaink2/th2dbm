@@ -17,11 +17,11 @@ mod_row_selected_options_server <- function(id, target_table = "test_table", cur
       fluidRow(
         column(
           width = 6,
-          actionButton(inputId = ns("update_selected_row"), label = "Update", icon = icon("pen"))
+          actionButton(inputId = ns("update_selected_row"), label = "Update", style = add_button_theme(), icon = icon("pen"))
         ),
         column(
           width = 6,
-          actionButton(inputId = ns("delete_selected_row"), label = "Delete", icon = icon("trash"))
+          actionButton(inputId = ns("delete_selected_row"), label = "Delete", style = add_button_theme(), icon = icon("trash"))
         )
       )
     })
