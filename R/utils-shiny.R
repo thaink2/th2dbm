@@ -1,5 +1,14 @@
+#' HTML Dependency for Datamods
+#'
+#' Creates an HTML dependency for the 'datamods' package, including
+#' JavaScript and CSS assets.
+#'
+#' @return An `htmltools::htmlDependency` object representing the dependency.
+#'
 #' @importFrom htmltools htmlDependency
 #' @importFrom utils packageVersion
+#'
+#' @noRd
 html_dependency_datamods <- function() {
   htmlDependency(
     name = "datamods",
@@ -12,11 +21,13 @@ html_dependency_datamods <- function() {
 }
 
 
-#' Enable or disable a widget from server
+#' Toggle Widget Enable/Disable State
 #'
-#' @param inputId Widget's inputId.
-#' @param enable Enable or disable the input.
-#' @param session Shiny session.
+#' Enables or disables a Shiny widget based on its input ID.
+#'
+#' @param inputId The input ID of the widget to toggle.
+#' @param enable A logical value indicating whether to enable (`TRUE`) or disable (`FALSE`) the widget.
+#' @param session The Shiny session object.
 #'
 #' @noRd
 toggle_widget <- function(inputId,
@@ -29,17 +40,17 @@ toggle_widget <- function(inputId,
 }
 
 
-#' Insert an alert into a placeholder in UI
+#' Insert an Alert into a Placeholder
 #'
-#' @param selector Id for alert, the placeholder maust have \code{"-placeholder"} suffix.
-#' @param ... Arguments passed to \code{shinyWidgets::alert}.
+#' Inserts a Shiny alert into a designated placeholder element in the UI.
 #'
-#' @return No value.
+#' @param selector The ID of the alert, where the placeholder has the suffix "-placeholder".
+#' @param ... Additional arguments passed to the `shinyWidgets::alert` function.
+#'
 #' @noRd
 #'
 #' @importFrom shiny removeUI insertUI
 #' @importFrom shinyWidgets alert
-#'
 insert_alert <- function(selector, ...) {
   removeUI(selector = paste0("#", selector, "-result"))
   insertUI(
@@ -51,10 +62,16 @@ insert_alert <- function(selector, ...) {
   )
 }
 
-
-
-
-
+#' Show UI Element
+#'
+#' Sends a custom message to show a specific UI element.
+#'
+#' @param selector The CSS selector of the element to show.
+#' @param inline Whether to show the element inline or not.
+#' @param id The ID of the element to show.
+#' @param session The Shiny session object.
+#'
+#' @noRd
 showUI <- function(selector = NULL,
                    inline = FALSE,
                    id = NULL,
@@ -72,6 +89,16 @@ showUI <- function(selector = NULL,
   )
 }
 
+#' Hide UI Element
+#'
+#' Sends a custom message to hide a specific UI element.
+#'
+#' @param selector The CSS selector of the element to hide.
+#' @param inline Whether the element is inline or not.
+#' @param id The ID of the element to hide.
+#' @param session The Shiny session object.
+#'
+#' @noRd
 hideUI <- function(selector = NULL,
                    inline = FALSE,
                    id = NULL,
@@ -89,7 +116,15 @@ hideUI <- function(selector = NULL,
   )
 }
 
-
+#' Enable a Tab
+#'
+#' Enables a specific tab in a tabsetPanel.
+#'
+#' @param id The ID of the tabsetPanel.
+#' @param value The value of the tab to enable.
+#' @param session The Shiny session object.
+#'
+#' @noRd
 enable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) {
   session$sendCustomMessage(
     type = "datamods-enableTab",
@@ -97,6 +132,15 @@ enable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) {
   )
 }
 
+#' Disable a Tab
+#'
+#' Disables a specific tab in a tabsetPanel.
+#'
+#' @param id The ID of the tabsetPanel.
+#' @param value The value of the tab to disable.
+#' @param session The Shiny session object.
+#'
+#' @noRd
 disable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) {
   session$sendCustomMessage(
     type = "datamods-disableTab",
@@ -104,7 +148,17 @@ disable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) 
   )
 }
 
+#' Update Tab Label
+#'
+#' Updates the label of a specific tab in a tabsetPanel.
+#'
+#' @param id The ID of the tabsetPanel.
+#' @param value The value of the tab to update.
+#' @param label The new label for the tab.
+#' @param session The Shiny session object.
+#'
 #' @importFrom htmltools doRenderTags
+#' @noRd
 update_tab_label <- function(id, value, label, session = shiny::getDefaultReactiveDomain()) {
   session$sendCustomMessage(
     type = "datamods-updateTabLabel",
@@ -113,8 +167,21 @@ update_tab_label <- function(id, value, label, session = shiny::getDefaultReacti
 }
 
 
+#' Create a Success Alert
+#'
+#' Generates a success alert message with optional information about imported data.
+#'
+#' @param data The imported data (optional).
+#' @param trigger_return The trigger for displaying the alert ("button" or other).
+#' @param btn_show_data Whether to include a button to show the data.
+#' @param extra Additional content to include in the alert.
+#' @param session The Shiny session object.
+#'
+#' @return An HTML tag list representing the success alert.
+#'
 #' @importFrom htmltools tagList tags
 #' @importFrom shiny icon getDefaultReactiveDomain
+#' @noRd
 make_success_alert <- function(data,
                                trigger_return,
                                btn_show_data,
@@ -152,6 +219,15 @@ make_success_alert <- function(data,
   return(success_message)
 }
 
+#' Insert an Error Alert
+#'
+#' Inserts an error alert into a specified placeholder.
+#'
+#' @param mssg The error message to display.
+#' @param selector The ID of the placeholder where the alert will be inserted.
+#' @param session The Shiny session object.
+#'
+#' @noRd
 insert_error <- function(mssg = i18n("Something went wrong..."),
                          selector = "import",
                          session = shiny::getDefaultReactiveDomain()) {
@@ -163,8 +239,16 @@ insert_error <- function(mssg = i18n("Something went wrong..."),
   )
 }
 
-
+#' Create a Help Popup
+#'
+#' Creates a help popup with the provided text.
+#'
+#' @param text The help text to display in the popup.
+#'
+#' @return An HTML tag list representing the help popup.
+#'
 #' @importFrom htmltools tagList tags doRenderTags
+#' @noRd
 help_popup <- function(text) {
   tagList(
     tags$span(
@@ -183,7 +267,16 @@ help_popup <- function(text) {
   )
 }
 
+#' Create an Import Button
+#'
+#' Creates a styled "Import data" button.
+#'
+#' @param session The Shiny session object.
+#'
+#' @return An action button for importing data.
+#'
 #' @importFrom shiny actionButton icon getDefaultReactiveDomain
+#' @noRd
 button_import <- function(session = shiny::getDefaultReactiveDomain()) {
   actionButton(
     inputId = session$ns("confirm"),
@@ -198,8 +291,13 @@ button_import <- function(session = shiny::getDefaultReactiveDomain()) {
   )
 }
 
-
-
+#' Create a Close Modal Button
+#'
+#' Creates a button to close a modal dialog.
+#'
+#' @return A button element to close the modal.
+#'
+#' @noRd
 button_close_modal <- function() {
   tags$button(
     phosphoricons::ph("x", title = i18n("Close"), height = "2em"),
@@ -212,11 +310,18 @@ button_close_modal <- function() {
 }
 
 
+#' Get Primary Color from Theme
+#'
+#' Retrieves the primary color from the current Bootstrap theme.
+#'
+#' @return The primary color as a hex string. If no theme is detected, returns a default color.
+#'
 #' @importFrom bslib bs_current_theme is_bs_theme bs_get_variables
+#' @noRd
 get_primary_color <- function() {
   theme <- bslib::bs_current_theme()
   if (!bslib::is_bs_theme(theme)) {
-    return("#112466")
+    return("#013DFF")
   }
   primary <- bslib::bs_get_variables(theme, "primary")
   unname(primary)

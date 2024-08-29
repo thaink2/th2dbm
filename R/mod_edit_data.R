@@ -1,5 +1,12 @@
-#' @export
+#' User Interface for Data Editing Module
 #'
+#' Displays a modal dialog for editing data in a table.
+#'
+#' @param id The namespace ID for the module.
+#'
+#' @return A modal dialog containing UI elements for editing table data.
+#'
+#' @export
 mod_edit_data_ui <- function(id) {
   ns <- NS(id)
   showModal(modalDialog(
@@ -12,6 +19,17 @@ mod_edit_data_ui <- function(id) {
   ))
 }
 
+#' Server Logic for Data Editing Module
+#'
+#' Handles the server-side logic for editing table data. It retrieves column
+#' metadata, renders UI elements for each column using the 'mod_col_bloc'
+#' module, and provides a save button to update the table schema in the database.
+#'
+#' @param id The namespace ID for the module.
+#' @param target_table The name of the table to be edited.
+#' @param mod_refresh_file The path to the file used for refreshing the module.
+#'
+#' @export
 mod_edit_data_server <- function(id, target_table, mod_refresh_file) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns

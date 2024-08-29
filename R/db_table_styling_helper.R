@@ -1,4 +1,14 @@
-#' preapre_db_table_view
+#' Prepare Database Table for Display
+#'
+#' This function prepares a database table for visualization in a Shiny application. It handles specific formatting and transformations based on the table and column types.
+#'
+#' @param use_db_table The data.frame or data.table containing the database table data.
+#' @param target_table The name of the target table.
+#' @param secret_tables A vector of table names considered secret, for which the 'COL_ID' column is removed.
+#' @param styling_var The column name used for conditional formatting (default: "STATUS").
+#' @param current_permission_table (Optional) A vector of table names with specific permissions.
+#'
+#' @return A DT datatable object ready for display, with potential formatting applied.
 #' @export
 prepare_db_table_view <- function(use_db_table = NULL, target_table = NULL, secret_tables = c("secret_table"), styling_var = "STATUS", current_permission_table = NULL) {
   vars_table_metadata <- vars_table_metadata(current_target_table = target_table)
@@ -57,6 +67,14 @@ prepare_db_table_view <- function(use_db_table = NULL, target_table = NULL, secr
   return(dt_table_dt)
 }
 
+#' Convert Date Columns
+#'
+#' This helper function converts specific columns within a data.frame or data.table from numeric timestamps to formatted date-time strings.
+#'
+#' @param db_table The data.frame or data.table containing the data.
+#' @param date_columns A vector of column names to convert to date-time format.
+#'
+#' @return The modified data.frame or data.table with converted date columns.
 convert_date_columns <- function(db_table, date_columns) {
   db_table %>% mutate(across(all_of(date_columns), ~ case_when(
     !is.na(as.numeric(.)) ~ as.character(as.POSIXct(as.numeric(.), origin = "1970-01-01", tz = "UTC")),
@@ -64,70 +82,4 @@ convert_date_columns <- function(db_table, date_columns) {
   )))
 }
 
-#' @export
-have_permission_to_see <- function(permission_table = "th2_ml_permissions", target_object = "test_table") {
-  permissions_db <- grant_ml_permission_db(
-    target_table = permission_table,
-    meta = list(
-      OBJECT_ID = target_object,
-      current_user = Sys.getenv("SHINYPROXY_USERNAME")
-    ),
-    permission_action = "get"
-  )
 
-  # Vérifiez que permissions_db n'est pas NULL et contient le champ PERMISSION_LEVEL
-  if (is.null(permissions_db) || is.null(permissions_db$PERMISSION_LEVEL)) {
-    return(FALSE)
-  }
-
-  # S'assurer que PERMISSION_LEVEL est un vecteur de longueur 1 pour éviter des erreurs avec ||
-  if (length(permissions_db$PERMISSION_LEVEL) != 1) {
-    warning("PERMISSION_LEVEL contains more than one value, which is not expected.")
-    return(FALSE)
-  }
-
-  # Utilisez || pour une évaluation de court-circuit sur une valeur scalaire
-  if (permissions_db$PERMISSION_LEVEL == "None") {
-    return(FALSE)
-  } else {
-    return(TRUE)
-  }
-}
-
-
-#' @export
-have_permission_to_edit <- function(permission_table = "th2_ml_permissions", target_object = "test_table") {
-  permissions_db <- grant_ml_permission_db(
-    target_table = permission_table,
-    meta = list(
-      OBJECT_ID = target_object,
-      current_user = Sys.getenv("SHINYPROXY_USERNAME")
-    ),
-    permission_action = "get"
-  )
-
-  if (is.null(permissions_db) || permissions_db$PERMISSION_LEVEL %in% c("View", "None")) {
-    return(F)
-  } else {
-    return(T)
-  }
-}
-
-#' @export
-have_permission_to_manage <- function(permission_table = "th2_ml_permissions", target_object = "test_table") {
-  permissions_db <- grant_ml_permission_db(
-    target_table = permission_table,
-    meta = list(
-      OBJECT_ID = target_object,
-      current_user = Sys.getenv("SHINYPROXY_USERNAME")
-    ),
-    permission_action = "get"
-  )
-
-
-  if (is.null(permissions_db) || !permissions_db$PERMISSION_LEVEL %in% c("Owner", "Manage")) {
-    return(F)
-  } else {
-    return(T)
-  }
-}

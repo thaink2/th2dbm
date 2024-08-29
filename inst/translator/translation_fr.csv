@@ -1,0 +1,89 @@
+en,fr
+quality, qualité
+Choose file(csv text xls), Choisir fichier(csv txt xls)
+Data Source, Src. Données
+Dataset, Mes Données
+Overview, Synthèse
+Browse, Charger
+Data Upload, Chargement de Données
+Data Info, Infos Données
+Data Quality, Qualité de Données
+% not missing values, % données non manquantes
+Data Successfully uploaded, Chargement de données réussis
+Time variable not available, Variable temps non disponible
+Time variable, Variable Temporelle
+Target variables, Variables
+Time frequency, Fréquence de temps
+Number of clusters is higher than number of variables, Le nombre de clusters est supérieur au nombre de variables
+Exploration Board,Tableau d'exploration
+Granularity,Granularité
+Average, Moyenne
+Median, Médiane
+Sum,Somme
+Min, Min
+Max, Max
+First Value , Premiere veleur
+Last Value, Dernière Valeur
+Chart Type, Type de Graph
+Outliers, Valeurs aberrantes
+Report Information, Informations du Rapport
+Report Title, Titre
+FairViewer Report, Rapport FairViewer
+Author, Auteur
+Creation Time, Temps de Création
+Report Content, Contenu
+Introduction/Summary, Introduction/Sommaire
+Report Generation, Génération du Rapport
+Publish Report, Publier
+Download, Télécharger
+Share, Partager
+Anomaly detection, Detection d'Anomalies
+Start, Démarrer
+Aggregation,Agrégation
+Key Numbers, Chiffres clé
+Anomaly Board, Tableau des Anomalies
+Select Variable, Choisir Variable
+Settings,Réglages
+Advanced, Configuration avancée
+Observations, Obsérvations
+Predictions, Prévisions
+Possible rates, Taux possible
+Insight Board,Tableau d'analyse
+Connections Board, Tableau d'interconnexions
+Aggregate by,Agréger par
+Aggregation Board, Tableau d'agrégation
+Forecasting Board, Tableau de Prévisions
+Number of clusters, Nombre de clusters
+Growth Rate Board, Analyse de croissance des variables
+Data View, Synthèse de données
+Explore & Prepare , Explorer et Préparer
+Exploration, Exploration
+Insights, Analyses
+Growth Rate, Taux de croissance
+AI & Analytics, IA & Analytics
+Anomaly Suite, Anomalies
+Causality, Causalité
+Forecasting, Prévisions
+Reporting/Dashboard, Reporting/Tableau
+Generate and publish, Générer  et Publier
+My Data, Mes Données
+Weekly, Hebdo
+Daily, Journalier
+Monthly, Mensuel
+Quarterly, Trimestre
+Yearly, Annuel
+months, mois
+hours, heures
+1/2 Hours,1/2 Heure
+days, jours
+weeks, semaines
+years, années
+quarters, trimestre 
+No data available with strictly positive values, Aucune donnée disponible avec des valeurs strictement positives
+Interdependency Board, Tableau d'interconnexion
+Forecast Horizon, Horizon de prévision
+Time periode, Période de temps
+Advanced Configs, Configurations avancées
+Categorical variables, Variables Catégoriques
+Target Sheet, Feuille
+Time Period, Période

@@ -4,10 +4,10 @@
 #' en la créant si elle n'existe pas. Optionnellement, initie le produit en
 #' appelant un script d'initialisation.
 #'
-#' @param target_table Nom de la table cible à initialiser ou à vérifier.
-#'                     Par défaut, "th2metadata_table".
-#' @param working_mode Le mode de travail qui peut influencer l'initialisation
-#'                     du produit. Par défaut, "Dev".
+#' @param target_table Nom de la table cible (par défaut : "th2metadata_table")
+#' @param working_mode Mode de travail (par défaut : "Dev")
+#' @param file_path Chemin du script d'initialisation (par défaut : "./R/initializer.R")
+#' @param cluster Type de cluster (par défaut : "aws")
 #' @import dplyr
 #' @export
 initialize_database <- function(target_table = "th2metadata_table",
@@ -102,8 +102,14 @@ initialize_database <- function(target_table = "th2metadata_table",
   DBI::dbDisconnect(conn = db_con)
 }
 
+#' Copier une table
+#'
+#' Copie une table d'une base de données source vers une base de données cible.
+#'
+#' @param db_source Connexion à la base de données source
+#' @param db_target Connexion à la base de données cible
+#' @param target_table Nom de la table à copier
 #' @export
-
 copy_table <- function(db_source, db_target, target_table) {
   # Lire les données de la table source
   data <- DBI::dbReadTable(db_source, target_table)
@@ -175,11 +181,11 @@ th2_install_db_drivers <- function(jdbcs_drivers_path = NULL, db_type = "all") {
 #' Établit une connexion à une base de données spécifiée, soit SQLite soit
 #' une base de données gérée via JDBC.
 #'
-#' @param db_type Type de la base de données à connecter, utilise une variable
-#'                d'environnement par défaut pour déterminer le type.
-#' @param db_params list of parameters used to establish connection to database
-#' @param db_file_name Nom de fichier pour les connexions à la base de données
-#'                     SQLite, utilise une variable d'environnement par défaut.
+#' @param db_type Type de base de données (par défaut : valeur de la variable d'environnement "CURRENT_DB")
+#' @param db_params Liste de paramètres de connexion (hôte, base de données, mot de passe, nom d'utilisateur, port)
+#' @param db_file_name Nom du fichier de base de données SQLite (par défaut : valeur de la variable d'environnement "CURRENT_DB_DIR")
+#' @param extended_types Utiliser des types étendus pour SQLite (par défaut : FALSE)
+#' @param path_driver Chemin vers le pilote JDBC (optionnel)
 #' @export
 connect_to_database <- function(
     db_type = Sys.getenv("CURRENT_DB"),
@@ -301,9 +307,12 @@ retrieve_table_data <- function(db_con = connect_to_database(), table_name = NUL
   return(data)
 }
 
-#' vars_table_metadata
-#' @param db_con database connection object
-#' @param current_target_table Nom de la table cible pour laquelle récupérer les métadonnées.
+#' Métadonnées de la table des variables
+#'
+#' Récupère les métadonnées d'une table spécifique ou de toutes les tables à partir de la table 'th2metadata_table'.
+#'
+#' @param db_con Connexion active à la base de données.
+#' @param current_target_table Nom de la table cible pour laquelle récupérer les métadonnées. Par défaut, récupère les métadonnées de toutes les tables.
 #' @export
 vars_table_metadata <- function(db_con = connect_to_database(), current_target_table = "th2metadata_table") {
   # Vérification de l'existence de la table 'th2metadata_table'
@@ -506,6 +515,12 @@ delete_entry_in_table <- function(target_table = NULL, unique_id_col = NULL,
   return("Entry successfully deleted")
 }
 
+#' Supprimer les lignes vides
+#'
+#' Supprime les lignes d'une table où une colonne spécifiée est vide (NULL ou chaîne vide).
+#'
+#' @param nom_table Nom de la table à nettoyer
+#' @param nom_colonne Nom de la colonne à vérifier pour les valeurs vides
 #' @export
 supprimer_lignes_vides <- function(nom_table, nom_colonne) {
   conn <- connect_to_database()
@@ -521,9 +536,13 @@ supprimer_lignes_vides <- function(nom_table, nom_colonne) {
   paste("Rows with empty cells in column ", nom_colonne, "have been deleted.")
 }
 
-#' th2_add_db_connection_params
-#' @param params_list list of parameters to register
-#' @param meta additional metadata information
+#' Ajouter ou mettre à jour les paramètres de connexion à la base de données
+#'
+#' Ajoute ou met à jour les paramètres de connexion à la base de données dans la table 'data_connection_params'.
+#' Chiffre les paramètres sensibles avant de les stocker.
+#'
+#' @param params_list Liste des paramètres de connexion.
+#' @param meta Métadonnées supplémentaires (nom de la donnée, source de données, propriétaire).
 #' @import sodium
 #' @export
 th2_add_db_connection_params <- function(params_list = list(), meta = list(

@@ -257,9 +257,6 @@ update_variables_server <- function(id, data, height = NULL) {
 #' @return a \code{character} vector as same length as number of variables
 #' @noRd
 #'
-#' @examples
-#'
-#' get_classes(mtcars)
 get_classes <- function(data) {
   classes <- lapply(
     X = data,
@@ -280,8 +277,6 @@ get_classes <- function(data) {
 #'
 #' @importFrom data.table uniqueN
 #'
-#' @examples
-#' get_n_unique(mtcars)
 get_n_unique <- function(data) {
   u <- lapply(data, FUN = function(x) {
     if (is.atomic(x)) {
@@ -302,10 +297,6 @@ get_n_unique <- function(data) {
 #' @return a \code{character} vector
 #' @noRd
 #'
-#' @examples
-#'
-#' pad0(1:10)
-#' pad0(c(1, 15, 150, NA))
 pad0 <- function(x) {
   NAs <- which(is.na(x))
   x <- formatC(x, width = max(nchar(as.character(x)), na.rm = TRUE), flag = "0")
@@ -321,11 +312,6 @@ pad0 <- function(x) {
 #'
 #' @return a \code{data.frame}
 #' @noRd
-#'
-#' @examples
-#'
-#' summary_vars(iris)
-#' summary_vars(mtcars)
 summary_vars <- function(data) {
   data <- as.data.frame(data)
   datsum <- data.frame(

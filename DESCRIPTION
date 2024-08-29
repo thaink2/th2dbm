@@ -17,6 +17,7 @@ Imports:
     DatabaseConnector,
     DBI,
     dplyr,
+    bslib,
     DT,
     encryptr,
     glue,

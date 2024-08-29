@@ -1,9 +1,24 @@
+#' Provides the UI elements for updating metadata associated with a table.
+#'
+#' @param id The namespace ID for the module.
+#'
+#' @return A UI output element for triggering the metadata update process.
+#'
 #' @export
 mod_update_metadata_ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns("update_col"))
 }
 
+#' Server Logic for Metadata Update Module
+#'
+#' Handles the server-side logic for updating table metadata. It allows the user
+#' to select a table, edit its column properties, and save the changes to the
+#' database.
+#'
+#' @param id The namespace ID for the module.
+#' @param mod_refresh_file The path to the file used for refreshing the module.
+#'
 #' @export
 mod_update_metadata_server <-
   function(id, mod_refresh_file) {

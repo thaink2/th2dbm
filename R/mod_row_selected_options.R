@@ -1,3 +1,12 @@
+#' User Interface for Row Selected Options Module
+#'
+#' Creates a UI for displaying options when a row is selected,
+#' typically including update and delete buttons.
+#'
+#' @param id The namespace ID for the module.
+#'
+#' @return A `tagList` containing the UI elements for the row selected options.
+#'
 #' @export
 mod_row_selected_options_ui <- function(id) {
   ns <- NS(id)
@@ -8,6 +17,17 @@ mod_row_selected_options_ui <- function(id) {
   )
 }
 
+#' Server Logic for Row Selected Options Module
+#'
+#' Handles the server-side logic for row selected options, including
+#' updating and deleting rows from the specified table.
+#'
+#' @param id The namespace ID for the module.
+#' @param target_table The name of the table associated with the selected row.
+#' @param current_user The current user's username.
+#' @param target_row The data frame representing the selected row.
+#' @param refresh_file The path to the file used for refreshing the module.
+#'
 #' @export
 mod_row_selected_options_server <- function(id, target_table = "test_table", current_user = Sys.getenv("SHINYPROXY_USERNAME"), target_row = data.frame(), refresh_file = NULL) {
   moduleServer(id, function(input, output, session) {

@@ -1,14 +1,36 @@
-library(glue)
-library(dplyr)
-library(shiny)
-library(magrittr)
-
+#' UI for Column Block Module
+#'
+#' Generates the user interface for defining column properties.
+#'
+#' @param id The module's namespace ID.
+#'
+#' @return A `uiOutput` object rendering the column configuration UI.
+#'
 #' @export
 mod_col_bloc_ui <- function(id) {
   ns <- NS(id)
   uiOutput(ns("columns_id"))
 }
 
+#' Server for Column Block Module
+#'
+#' Handles the server-side logic for column configuration, allowing users to
+#' define column names, types, uniqueness, and choices. It saves the column
+#' information to a CSV file for further processing.
+#'
+#' @param id The module's namespace ID.
+#' @param tab_name The name of the table associated with the column.
+#' @param current_user The current user's username.
+#' @param meta A list containing metadata about the column, including:
+#'   - `col_id`: The column's unique identifier.
+#'   - `col_name`: The column's name.
+#'   - `col_unique`: Whether the column values should be unique (`TRUE` or `FALSE`).
+#'   - `col_type`: The column's data type (e.g., "text", "numeric", "choices").
+#'   - `col_choice`: A comma-separated string of choices for the column (if applicable).
+#'   - `col_choose_var`: The column to choose from another table (if applicable).
+#'   - `col_choose_tab`: The table to choose a column from (if applicable).
+#' @param indice An index or identifier for the column.
+#'
 #' @export
 mod_col_bloc_server <- function(id, tab_name = "test_table",
                                 current_user = Sys.getenv("SHINYPROXY_USERNAME"),
