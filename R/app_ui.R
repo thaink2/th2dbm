@@ -22,13 +22,6 @@ app_ui <- function(request) {
             bs4Dash::bs4SidebarMenuSubItem("Update Table", tabName = "update_db_table", icon = shiny::icon("pen")),
             bs4Dash::bs4SidebarMenuSubItem("Delete Table", tabName = "del_db_table", icon = shiny::icon("trash")),
             bs4Dash::bs4SidebarMenuSubItem("View Table", tabName = "view_db_table", icon = shiny::icon("eye"))
-          ),
-          bs4Dash::bs4SidebarMenuItem(
-            "Data Handler",
-            icon = shiny::icon("table"),
-            tabName = "data_handler",
-            startExpanded = TRUE,
-            bs4Dash::bs4SidebarMenuSubItem("Testing", tabName = "manage_testing", icon = shiny::icon("flask"))
           )
         )
       ),
@@ -38,10 +31,8 @@ app_ui <- function(request) {
             "create_db_table",
             bs4Dash::tabBox(
               width = 12, selected = "Add entry",
-              tabPanel(
-                title = "Add entry", icon = shiny::icon("plus"),
-                mod_th2_database_management_ui("database")
-              )
+              title = "Add entry", icon = shiny::icon("plus"),
+              mod_th2_database_management_ui("database")
             )
           ),
           bs4Dash::tabItem(
@@ -62,68 +53,18 @@ app_ui <- function(request) {
             "del_db_table",
             bs4Dash::tabBox(
               width = 12, selected = "Overview",
-              tabPanel(
-                title = "Overview", icon = shiny::icon("trash"),
-                mod_th2_database_management_ui("delete_database")
-              )
+              title = "Overview", icon = shiny::icon("trash"),
+              mod_th2_database_management_ui("delete_database")
             )
           ),
           bs4Dash::tabItem(
             "view_db_table",
             bs4Dash::tabBox(
               width = 12, selected = "Overview",
-              tabPanel(
-                title = "Overview", icon = shiny::icon("eye"),
-                mod_th2db_overview_ui("view_db")
-              )
-            )
-          ),
-          bs4Dash::tabItem(
-            "manage_testing",
-            bs4Dash::tabBox(
-              width = 12, selected = "General",
-              tabPanel(
-                title = "General", icon = shiny::icon("eye"),
-                mod_th2use_db_table_ui(id = "test_main")
-              ),
-              tabPanel(
-                title = "Gouvernance", icon = shiny::icon("user"),
-                mod_th2use_db_table_ui(id = "users_table")
-              ),
-              tabPanel(
-                title = "Permissions", icon = shiny::icon("user-lock"),
-                mod_th2use_db_table_ui(id = "permission_table")
-              ),
-              tabPanel(
-                title = "Secrets", icon = shiny::icon("lock"),
-                mod_th2use_db_table_ui(id = "secret_table")
-              ),
-              tabPanel(
-                title = "Data Connections", icon = shiny::icon("database"),
-                mod_th2use_db_table_ui(id = "data_connection_params")
-              ),
-              tabPanel(
-                title = "Sale data", icon = shiny::icon("database"),
-                mod_th2use_db_table_ui(id = "sale_data")
-              )
-            )
-          ),
-          bs4Dash::tabItem(
-            "manage_beta_tester",
-            bs4Dash::tabBox(
-              width = 12, selected = "Overview",
-              tabPanel(
-                title = "Overview", icon = shiny::icon("eye"),
-                mod_beta_tester_manage_ui(id = "beta_tester")
-              )
+              title = "Overview", icon = shiny::icon("eye"),
+              mod_db_tables_boxes_ui("db_tables_boxes")
             )
           )
-        )
-      ),
-      controlbar = bs4Dash::bs4DashControlbar(
-        bs4Dash::controlbarMenu(
-          id = "controlMenu",
-          bs4Dash::controlbarItem("User Settings", icon = "users-cog", mod_change_current_user_ui("user"))
         )
       ),
       title = "Database Manager"

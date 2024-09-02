@@ -1,3 +1,11 @@
+#' User Interface for CSV to Database Module
+#'
+#' Provides the UI elements for importing a CSV file into a database table.
+#'
+#' @param id The namespace ID for the module.
+#'
+#' @return A `fluidPage` containing input elements for table name and CSV file selection.
+#'
 #' @export
 mod_csv_to_db_ui <- function(id) {
   ns <- NS(id)
@@ -7,6 +15,15 @@ mod_csv_to_db_ui <- function(id) {
   )
 }
 
+#' Server Logic for CSV to Database Module
+#'
+#' Handles the server-side logic for importing a CSV file into a database table.
+#' It allows the user to specify the table name and select the CSV file. Upon import,
+#' it checks for table existence, writes the data to the database, and optionally
+#' adds permissions to the 'th2_ml_permissions' table.
+#'
+#' @param id The namespace ID for the module.
+#'
 #' @export
 mod_csv_to_db_server <- function(id) {
   moduleServer(id, function(input, output, session) {
@@ -21,7 +38,7 @@ mod_csv_to_db_server <- function(id) {
     output$add_button <- renderUI({
       req(input$table_name, input$csv_file)
 
-      actionButton(inputId = ns("add_button"), label = "Add", icon = icon("plus"))
+      actionButton(inputId = ns("add_button"), label = "Add", style = add_button_theme(), icon = icon("plus"))
     })
 
     observeEvent(input$add_button, {
@@ -82,7 +99,6 @@ mod_csv_to_db_server <- function(id) {
 
         add_entry_to_table(new_entry = permissions_value, target_table = "th2_ml_permissions")
       }
-
       removeModal()
       th2dbm::th_shinyalert(
         title = glue::glue("{input$table_name} created successfully"),

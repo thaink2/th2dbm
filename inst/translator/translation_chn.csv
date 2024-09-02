@@ -1,0 +1,79 @@
+en,chn
+quality, 质量
+Choose file(csv text xls), 选择文件（csv 文本 xls）
+Data Source, 数据源
+Dataset, 数据集
+Overview, 概述
+Browse, 浏览
+Data Upload, 数据上传
+Data Info, 数据信息
+Data Quality, 数据质量
+% not missing values, % 不丢失
+Data Successfully uploaded, 数据上传成功
+Time variable not available, 时间变量不可用
+Time variable, 时间变量
+Target variables, 目标变量
+Time frequency, 时间频率
+Exploration Board,勘探局
+Granularity,粒度
+Average, 中年
+Median, 中位数
+Sum,和
+First Value , 第一值
+Last Value, 最后值
+Chart Type, 图表类型
+Outliers, 异常值
+Report Information, 报告信息
+Report Title, 报告标题
+FairViewer Report, 报告 FairViewer
+Author, 作者
+Creation Time, 创建时间
+Report Content, 举报内容
+Introduction/Summary, 介绍/总结
+Report Generation, 报告生成
+Publish Report, 发布报告
+Download, 下载
+Share, 分享
+Anomaly detection,异常检测
+Start, 开始
+Aggregation,聚合
+Key Numbers, 关键数字
+Anomaly Board, 异常板
+Select Variable, 选择变量
+Settings,设置
+Advanced, 先进的
+Observations, 观察
+Predictions, 预测
+Possible rates, 可能的利率
+Insight Board,洞察板
+Aggregate by,汇总依据
+Aggregation Board, 聚合板
+Number of clusters, 簇数
+Growth Rate Board, 增长率委员会 
+Data View, 数据视图
+Explore & Prepare , 探索与准备
+Exploration, 勘探
+Insights, 见解
+Growth Rate, 增长率
+AI & Analytics, 人工智能与分析
+Anomaly Suit, 异常套装
+Causality, 因果关系
+Forecasting, 预测
+Forecasting Board, 预测委员会
+Reporting/Dashboard, 报告/仪表板
+Generate and publish, 生成并发布
+My Data, 我的数据
+Weekly, 每周
+Daily, 日常的
+Monthly, 每月
+Quarterly, 季刊
+Yearly, 每年
+months, 几个月
+hours, 小时
+1/2 Hours,1/2 小时
+days, 天
+weeks, 周
+years, 年
+quarters, 宿舍
+No data available with strictly positive values,没有严格正值的数据
+Interdependency Board, 相互依存委员会

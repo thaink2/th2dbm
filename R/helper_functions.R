@@ -1,44 +1,89 @@
-#' th_shinyalert
-#' @param title alert title
-#' @param text text to be displayed under title
-#' @param type info, success, fail
-#' @param html whether tu use html  or not
-#' @param imageUrl image url to be displayed in the alert popup
-#' @param confirmButtonCol color of the confirm button
+#' Shiny Alert with Customization
+#'
+#' Displays a Shiny alert with an optional image, title, text, and customizable button color.
+#'
+#' @param title The title of the alert.
+#' @param text The text content displayed within the alert.
+#' @param type The type of alert ("info", "success", "warning", "error").
+#' @param html Whether to render the `text` as HTML (`TRUE`) or plain text (`FALSE`).
+#' @param imageUrl The URL of the image to display within the alert. Defaults to the package logo.
+#' @param confirmButtonCol The color of the confirm button.
+#'
 #' @export
 th_shinyalert <-
-  function(title,
-                          text,
-                          type = "info",
-                          confirmButtonCol = "#013DFF",
-                          html = FALSE,
-                          imageUrl = NULL) {
-  if(is.null(imageUrl)){
-    imageUrl <- "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png"
+  function(title = "",
+           text = "",
+           type = "info",
+           confirmButtonCol = "#013DFF",
+           html = FALSE,
+           imageUrl = NULL) {
+    if (is.null(imageUrl)) {
+      imageUrl <- "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png"
+    }
+    shinyalert::shinyalert(
+      title = title,
+      text = text,
+      type = type,
+      imageUrl = imageUrl,
+      html = html,
+      confirmButtonCol = confirmButtonCol
+    )
   }
-  shinyalert::shinyalert(
-    title = title,
-    text = text,
-    type = type,
-    imageUrl = imageUrl,
-    html = html,
-    confirmButtonCol = confirmButtonCol
+
+#' Add Button Theme
+#'
+#' Creates CSS styles for a button with custom colors for text, background, and border.
+#'
+#' @param btn_col The text color of the button.
+#' @param background_col The background color of the button.
+#' @param border_col The border color of the button.
+#'
+#' @return A CSS style string for the button.
+#'
+#' @export
+add_button_theme <- function(btn_col = "#fff", background_col = "#013DFF", border_col = "#013DFF") {
+  style <- glue::glue("color: {btn_col}; background-color: {background_col}; border-color: {border_col};
+                                border-radius: 10px;
+                               border-width: 2px")
+  return(style)
+}
+
+#' Create a Download Button
+#'
+#' Creates a styled download button for Shiny applications.
+#'
+#' @param outputId The ID of the output element associated with the download.
+#' @param label The text label displayed on the button.
+#' @param class Additional CSS classes to apply to the button.
+#' @param ... Other arguments passed to the underlying `tags$a` function.
+#' @param icon The icon to display on the button (default: download icon).
+#'
+#' @return An HTML 'a' tag representing the download button.
+#'
+#' @export
+th2_download_button <- function(outputId, label = "Download", class = NULL, ..., icon = shiny::icon("download")) {
+  tags$a(
+    id = outputId, class = paste(
+      "btn btn-primary shiny-download-link",
+      class
+    ), href = "", target = "_blank", download = NA,
+    label, ...
   )
 }
 
-
-#' Préparer l'En-tête de l'Application
+#' Prepare the Application Header
 #'
-#' Cette fonction crée un en-tête personnalisé pour une application Shiny, incluant le logo de l'application et des liens vers le site web principal.
+#' Creates a custom header for a Shiny application, including the application logo and links.
 #'
-#' @return Un objet `dashboardHeader` de `bs4Dash` contenant l'en-tête personnalisé de l'application.
+#' @return A `dashboardHeader` object from `bs4Dash` containing the custom application header.
+#'
 #' @export
 prepare_app_header <- function() {
-  app_logo <- "https://static.wixstatic.com/media/9aacb8_9886b3a143c2470d96ec76a181e67e49~mv2.png/v1/fill/w_195,h_46,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/thaink2-logo-blue-big.png"
+  app_logo_circle <- "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png"
   bs4Dash::bs4DashNavbar(
     skin = "light",
     title = bs4Dash::bs4DashBrand(
-      title = "th2dbm"
+      title = bs4Dash::bs4DashBrand(title = "th2dbm", image = app_logo_circle)
     ),
     rightUi = shiny::tagList(
       shiny::tags$li(
@@ -48,15 +93,6 @@ prepare_app_header <- function() {
           target = "_blank",
           class = "nav-link",
           shiny::icon("power-off")
-        )
-      ),
-      shiny::tags$li(
-        class = "nav-item dropdown",
-        shiny::tags$a(
-          href = "https://www.thaink2.com/",
-          target = "_blank",
-          class = "nav-link",
-          shiny::tags$img(src = app_logo, style = "height: 30px")
         )
       ),
       shiny::tags$li(
@@ -72,12 +108,102 @@ prepare_app_header <- function() {
   )
 }
 
-#' Corriger la Date
+#' Set User Default Configurations
 #'
-#' Convertit un timestamp numérique en date lisible ou retourne la date d'entrée si elle n'est pas numérique.
+#' Sets default configurations for a user, including target language and time zone.
+#' Saves the configurations to a JSON file.
 #'
-#' @param current_date Date actuelle pouvant être un timestamp numérique ou une chaîne de caractères représentant la date.
-#' @return La date corrigée en format lisible si numérique, sinon retourne la date d'entrée.
+#' @param target_lang The target language for translations.
+#' @param time_zone The user's time zone.
+#' @param configs_dir The directory to store the configuration file.
+#'
+#' @return A list containing the user configurations.
+#'
+#' @export
+set_user_default_configs <- function(target_lang = "en", time_zone = "CET", configs_dir = "../home/configs/") {
+  user_configs <- list(target_lang = target_lang, time_zone = time_zone, update_time = Sys.time())
+  if (dir.exists(configs_dir) == FALSE) {
+    dir.create(configs_dir, recursive = TRUE)
+  }
+  user_name <- strsplit(Sys.getenv("SHINYPROXY_USERNAME"), "@") %>%
+    unlist() %>%
+    head(1) %>%
+    gsub("\\.", "_", .)
+  configs_file <- paste0(configs_dir, user_name, "_fairviewer_configs.json")
+  user_configs %>%
+    RJSONIO::toJSON() %>%
+    write(file = configs_file)
+  return(user_configs)
+}
+
+
+#' Load User Default Configurations
+#'
+#' Loads user default configurations from a JSON file. If the file doesn't exist, it creates one with default values.
+#'
+#' @param configs_dir The directory where the configuration file is stored.
+#'
+#' @return A list containing the loaded user configurations.
+#'
+#' @export
+load_user_default_configs <- function(configs_dir = "../home/configs/") {
+  user_name <- strsplit(Sys.getenv("SHINYPROXY_USERNAME"), "@") %>%
+    unlist() %>%
+    head(1) %>%
+    gsub("\\.", "_", .)
+  configs_file <- paste0(configs_dir, user_name, "_fairviewer_configs.json")
+  if (file.exists(configs_file) == FALSE) set_user_default_configs()
+  user_configs <- configs_file %>%
+    RJSONIO::fromJSON()
+  return(user_configs)
+}
+
+#' Load i18n Translator
+#'
+#' Loads the i18n translator for internationalization based on the user's default language configuration.
+#'
+#' @return An `i18n` translator object.
+#'
+#' @export
+load_i18n_translator <- function() {
+  # target_language <- golem::get_golem_options(which = "target_language" )
+  target_language <- load_user_default_configs()$target_lang
+  i18n <- shiny.i18n::Translator$new(translation_csvs_path = system.file("translator", package = "th2dbm"))
+  i18n$set_translation_language(target_language)
+  return(i18n)
+}
+
+#' Drop List Columns
+#'
+#' Removes columns of type 'list' from a data.table or data.frame.
+#'
+#' @param x The data.table or data.frame to process.
+#'
+#' @return The modified data.table or data.frame with list columns removed.
+#'
+#' @export
+dropListColumns <- function(x) {
+  type_col <- vapply(
+    X = x,
+    FUN = typeof,
+    FUN.VALUE = character(1),
+    USE.NAMES = FALSE
+  )
+  if (inherits(x, "data.table")) {
+    x[, .SD, .SDcols = type_col != "list"]
+  } else {
+    x[, type_col != "list", drop = FALSE]
+  }
+}
+
+#' Correct the Date
+#'
+#' Converts a numeric timestamp to a readable date or returns the input date if it's not numeric.
+#'
+#' @param current_date The current date, which can be a numeric timestamp or a date string.
+#'
+#' @return The corrected date in a readable format if the input is numeric, otherwise the original input.
+#'
 #' @export
 correct_date <- function(current_date) {
   return(ifelse(is.na(as.numeric(current_date)),
@@ -86,24 +212,28 @@ correct_date <- function(current_date) {
   ))
 }
 
-#' Générer un Identifiant Unique
+#' Generate a Unique Identifier
 #'
-#' Génère un identifiant unique en utilisant un préfixe spécifié et un UUID.
+#' Generates a unique identifier using a specified prefix and a UUID.
 #'
-#' @param prefix Préfixe à utiliser pour l'identifiant généré. Par défaut, "UserEntry".
-#' @return Un identifiant unique sous forme de chaîne de caractères.
+#' @param prefix A prefix to add to the generated identifier. Defaults to "UserEntry".
+#'
+#' @return A unique identifier as a character string.
+#'
 #' @export
 generateID <- function(prefix = "UserEntry") {
   sprintf("%s_%s", prefix, uuid::UUIDgenerate())
 }
 
-#' Créer un Fichier Aide pour Rafraîchissement
+#' Create a Helper File for Refresh
 #'
-#' Crée un fichier aide pour le rafraîchissement d'un module dans une application Shiny, utilisé pour stocker le timestamp du dernier rafraîchissement.
+#' Creates a helper file to store the timestamp of the last refresh for a specific module.
 #'
-#' @param mod_id Identifiant du module pour lequel créer le fichier de rafraîchissement.
-#' @param refresh_folder Dossier où stocker le fichier de rafraîchissement. Par défaut, "./refresh/".
-#' @return Le chemin du fichier de rafraîchissement créé.
+#' @param mod_id The identifier of the module.
+#' @param refresh_folder The folder where the refresh file will be stored.
+#'
+#' @return The path to the created refresh file.
+#'
 #' @export
 create_refresh_helper_file <- function(mod_id = NULL, refresh_folder = "./refresh/") {
   if (!dir.exists(refresh_folder)) dir.create(refresh_folder, recursive = TRUE)
@@ -113,12 +243,13 @@ create_refresh_helper_file <- function(mod_id = NULL, refresh_folder = "./refres
   return(mod_refresh_file)
 }
 
-#' Supprimer les Entrées Shiny
+#' Remove Shiny Inputs
 #'
-#' Supprime dynamiquement des entrées Shiny spécifiées par leur identifiant.
+#' Dynamically removes specified Shiny input elements by their identifier.
 #'
-#' @param id Identifiant des éléments d'entrée Shiny à supprimer.
-#' @param .input Objet `.input` de Shiny contenant les entrées.
+#' @param id The identifier of the Shiny input elements to remove.
+#' @param .input The Shiny `.input` object containing the inputs.
+#'
 #' @export
 remove_shiny_inputs <- function(id, .input) {
   invisible(
@@ -129,27 +260,23 @@ remove_shiny_inputs <- function(id, .input) {
 }
 
 
-#' Vérifier le format d'un email et retourner le nom formaté
+#' Check email format and return formatted name
 #'
-#' Cette fonction prend un email en entrée et vérifie s'il est au format prénom.nom@domaine.
-#' Si c'est le cas, elle retourne une chaîne de caractères au format "Prénom Nom" avec les
-#' premières lettres en majuscule. Sinon, elle retourne l'email tel quel.
+#' This function takes an email as input and checks if it's in the format firstname.lastname@domain.
+#' If so, it returns a string in the format "Firstname Lastname" with the first letters capitalized.
+#' Otherwise, it returns the original email.
 #'
-#' @param email L'adresse email à vérifier.
+#' @param email The email address to check.
 #'
-#' @return Une chaîne de caractères contenant "Prénom Nom" si l'email est au format
-#' prénom.nom@domaine, sinon l'email original.
+#' @return A string containing "Firstname Lastname" if the email is in the format
+#' firstname.lastname@domain, otherwise the original email.
 #'
 #' @export
-#'
-#' @examples
-#' verifier_format_email("prenom.nom@exemple.com")
-#' verifier_format_email("emailnonconforme@domaine")
 verifier_format_email <- function(email) {
-  # Utilise une expression régulière pour vérifier le format général prenom.nom@domaine
+  # Utilise une expression reguliere pour verifier le format general prenom.nom@domaine
   if (grepl("^[a-zA-Z]+\\.[a-zA-Z]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", email)) {
-    # Extraire le prénom et le nom à partir de l'email
-    parts <- strsplit(email, "[@.]")[[1]] # Sépare par '@' et '.'
+    # Extraire le prenom et le nom a partir de l'email
+    parts <- strsplit(email, "[@.]")[[1]] # Separe par '@' et '.'
     prenom <- parts[1]
     nom <- parts[2]
     formatted_name <- paste(
@@ -163,6 +290,16 @@ verifier_format_email <- function(email) {
   }
 }
 
+#' Get the current URL of the Shiny application
+#'
+#' This function retrieves the current URL of the Shiny application, including the protocol, hostname,
+#' pathname, and search parameters.
+#'
+#' @param session The Shiny session object (optional).
+#' @param port The port number of the Shiny application (default: 3838).
+#'
+#' @return The complete URL of the Shiny application as a string.
+#'
 #' @export
 get_current_url <- function(session = NULL, port = 3838) {
   protocol <- session$clientData$url_protocol
@@ -170,7 +307,7 @@ get_current_url <- function(session = NULL, port = 3838) {
   pathname <- session$clientData$url_pathname
   search <- session$clientData$url_search
 
-  # Construire l'URL complète
+  # Construire l'URL complete
   current_url <- paste0(protocol, "//", hostname)
 
   if (port != "") {
@@ -179,6 +316,6 @@ get_current_url <- function(session = NULL, port = 3838) {
 
   current_url <- paste0(current_url, pathname, search)
 
-  # Afficher l'URL complète
+  # Afficher l'URL complete
   return(current_url)
 }

@@ -67,7 +67,6 @@ mod_th2db_overview_server <- function(id, target_table = "th2metadata_table", cu
       }
 
       rows_selected <- input$db_overview_rows_selected
-      print(paste("target_row", db_overview()[rows_selected, ]))
       db_meta_list <- list(target_table = target_table, target_row = db_overview()[rows_selected, ])
       module_id <- generateID(prefix = "update_meta_entry")
       mod_row_selected_options_server(module_id, target_table = target_table, target_row = db_overview()[rows_selected, ], refresh_file = mod_refresh_file)

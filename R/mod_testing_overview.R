@@ -81,12 +81,12 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
     output$grant_add_button <- renderUI({
       req(input$change_target_table)
       if (target_table %in% current_permission_table()) {
-        actionButton(inputId = ns("grant_test_entry"), label = "Grant entry", icon = icon("user-lock"))
+        actionButton(inputId = ns("grant_test_entry"), label = "Grant entry", style = add_button_theme(), icon = icon("user-lock"))
       }
     })
 
     output$testing_add_button <- renderUI({
-      actionButton(inputId = ns("add_test_entry"), label = "Add entry", icon = icon("plus"))
+      actionButton(inputId = ns("add_test_entry"), label = "Add entry", style = add_button_theme(), icon = icon("plus"))
     })
 
 
@@ -136,14 +136,14 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
     output$use_db_table_dt <- DT::renderDataTable(
       {
         req(use_db_table())
-        if (!have_permission_to_see(target_object = target_table)) {
-          th2dbm::th_shinyalert(
-            title = "Permission warning",
-            confirmButtonCol = "#013DFF",
-            text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}  you are not authorized to add new entry into '{target_table}'"), type = "error"
-          )
-          return(NULL)
-        }
+        # if (!have_permission_to_see(target_object = target_table)) {
+        #   th2dbm::th_shinyalert(
+        #     title = "Permission warning",
+        #     confirmButtonCol = "#013DFF",
+        #     text = glue::glue("{verifier_format_email(Sys.getenv('SHINYPROXY_USERNAME'))}  you are not authorized to add new entry into '{target_table}'"), type = "error"
+        #   )
+        #   return(NULL)
+        # }
         use_db_table() %>%
           prepare_db_table_view(target_table = target_table, current_permission_table = current_permission_table())
       },
@@ -165,7 +165,6 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
       }
 
       rows_selected <- input$use_db_table_dt_rows_selected
-      print(rows_selected)
       db_meta_list <- list(target_table = target_table, target_row = use_db_table()[rows_selected, ])
       module_id <- generateID(prefix = "update_test_entry")
       mod_row_selected_options_server(module_id, target_table = target_table, target_row = use_db_table()[rows_selected, ], refresh_file = mod_refresh_file)

@@ -1,0 +1,88 @@
+en,it
+quality, qualità
+Choose file(csv text xls), Scegli file (testo csv xls)
+Data Source, Fonte di dati
+Dataset, Set di dati
+Overview, Panoramica
+Browse, Navigare
+Data Upload, Caricamento dati
+Data Info, Informazioni sui dati
+Data Quality, Qualità dei dati
+% not missing values, % non valori mancanti
+Data Successfully uploaded, Dati caricati con successo
+Time variable not available, Variabile tempo non disponibile
+Time variable, Variabile di tempo
+Target variables, Variabili obiettivo
+Time frequency, Frequenza temporale
+Number of clusters is higher than number of variables, Il numero di cluster è superiore al numero di variabili
+Exploration Board,Consiglio di esplorazione
+Granularity,Granularità
+Average, Media
+Median, Mediana
+Sum,Somma
+Min, Min
+Max, Max
+First Value , Primo Valore
+Last Value, Ultimo valore
+Chart Type, Tipo di grafico
+Outliers, Valori anomali
+Report Information, Informazioni sul rapporto
+Report Title, Titolo rapporto
+FairViewer Report,FairViewer rapporto 
+Author, Autore
+Creation Time, Tempo di creazione
+Report Content, contenuto
+Introduction/Summary, Introduzione/Riepilogo
+Report Generation, Generazione di rapporti
+Publish Report, Pubblica rapporto
+Download, Scarica
+Share, Condividere
+Anomaly detection, Rilevamento anomalie
+Start, Inizio
+Aggregation,Aggregazione
+Key Numbers, Numeri chiave
+Anomaly Board, Consiglio delle anomalie
+Select Variable, Seleziona Variabile
+Settings,Impostazioni
+Advanced, Avanzate
+Observations, Osservazioni
+Predictions, Predizioni
+Possible rates, Possibili tasso
+Insight Board,Consiglio di approfondimento
+Connections Board, Scheda dei collegamenti
+Aggregate by,Aggregato per
+Aggregation Board, Consiglio di aggregazione
+Forecasting Board, Consiglio di previsione
+Number of clusters, Numero di cluster
+Growth Rate Board, Consiglio del tasso di crescita
+Data View, Vista dati
+Explore & Prepare , Esplora e prepara
+Exploration, Esplorazione
+Insights, Approfondimenti
+Growth Rate, Tasso di crescita
+AI & Analytics, IA e analisi
+Anomaly Suite, Suite Anomalia
+Causality, Causalità
+Forecasting, Previsione
+Reporting/Dashboard, Reportistica/Dashboard
+Generate and publish, Genera e pubblica
+My Data, I miei dati
+Weekly, settimanalmente
+Daily, Quotidiano
+Monthly, Mensile
+Quarterly, Trimestrale
+Yearly, Annuale
+months, mesi
+hours, ore
+1/2 Hours,1/2 ore
+days, giorni
+weeks, settimane
+years, anni
+quarters, quarte 
+No data available with strictly positive values, Nessun dato disponibile con valori strettamente positivi
+Interdependency Board, Consiglio di interdipendenza
+Forecast Horizon, Previsione Orizzonte
+Time periode, Periodo di tempo
+Advanced Configs, Configurazioni avanzate
+Categorical variables, Variabili categoriali
+Target Sheet, Foglio 

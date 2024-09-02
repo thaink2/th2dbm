@@ -188,7 +188,7 @@ mod_th2new_entry_server <- function(id, db_meta = list(
         } else {
           label_text <- "Update"
         }
-        actionButton(inputId = ns("save_update_entries"), label = label_text, icon = icon("save"))
+        actionButton(inputId = ns("save_update_entries"), label = label_text, style = add_button_theme(), icon = icon("save"))
       }
     })
 
