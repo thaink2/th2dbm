@@ -12,9 +12,9 @@ name: Publish Docker image
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main2"]
+    branches: ["main"]
   pull_request:
-    branches: [main2]
+    branches: [main]
   release:
     types: [published]
 
