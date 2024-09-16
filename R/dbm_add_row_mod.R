@@ -6,6 +6,11 @@ addRowUI <- function(id, table_structure) {
     column_name <- table_structure$column_name[i]
     data_type <- table_structure$data_type[i]
 
+    # Exclure le champ 'id' s'il est présent
+    if (column_name == "colid") {
+      return(NULL)
+    }
+
     input_field <- switch(data_type,
                           "integer" = numericInput(ns(paste0("col_", column_name)), column_name, value = 0),
                           "bigint" = numericInput(ns(paste0("col_", column_name)), column_name, value = 0),
@@ -35,15 +40,24 @@ addRowUI <- function(id, table_structure) {
 
   tagList(
     column_inputs,
-    actionButton(ns("add_row"), "Add Row")
+    actionButton(
+      inputId = ns("add_row"),
+      label = glue::glue("Add Row"), style = add_button_theme(),
+      icon = icon("plus")
+    )
   )
 }
 
-addRowServer <- function(id, table_name, table_structure, con) {
+# Module Server
+addRowServer <- function(id, table_name, table_structure, con, data_changed) {
   moduleServer(id, function(input, output, session) {
     observeEvent(input$add_row, {
       column_names <- table_structure$column_name
       values <- lapply(column_names, function(col) {
+        if (col == "colid") {
+          return(generateID())
+        }
+
         value <- input[[paste0("col_", col)]]
         data_type <- table_structure$data_type[table_structure$column_name == col]
 
@@ -69,9 +83,11 @@ addRowServer <- function(id, table_name, table_structure, con) {
 
       tryCatch({
         DBI::dbWriteTable(con(), table_name, new_row, append = TRUE, row.names = FALSE)
+        data_changed(data_changed() + 1)
         showNotification("Row added successfully", type = "message")
         removeModal()
       }, error = function(e) {
+        print(paste("Error adding row:", e$message))
         showNotification(paste("Error adding row:", e$message), type = "error")
       })
     })

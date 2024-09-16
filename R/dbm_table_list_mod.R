@@ -31,8 +31,8 @@ tableListServer <- function(id, con, schema, data_changed) {
     ns <- session$ns
 
     column_types <- c(
-      "integer", "bigint", "numeric", "real", "double precision",
-      "char", "varchar", "text", "date", "time", "timestamp",
+      "varchar", "integer", "bigint", "numeric", "real", "double precision",
+      "char", "text", "date", "time", "timestamp",
       "boolean", "uuid", "json", "Choice"
     )
 
@@ -53,6 +53,7 @@ tableListServer <- function(id, con, schema, data_changed) {
         "))
       }, error = function(e) {
         showNotification(paste("Error fetching tables:", e$message), type = "error")
+        print(paste("Error fetching tables:", e$message))
         return(data.frame())
       })
     })
@@ -60,6 +61,7 @@ tableListServer <- function(id, con, schema, data_changed) {
     output$table_boxes <- renderUI({
       req(con())
       tables <- get_tables()
+      tables <- tables[tables$table_name != "th2metadata_table", ]
       if (nrow(tables) == 0) {
         return(p("No tables found in the database."))
       }
@@ -74,7 +76,7 @@ tableListServer <- function(id, con, schema, data_changed) {
               width = NULL,
               dropdownMenu = bs4Dash::boxDropdown(
                 icon = icon("wrench"),
-                bs4Dash::boxDropdownItem("Add", id = ns(paste0("add_", tables$table_name[i])), icon = icon("plus")),
+                # bs4Dash::boxDropdownItem("Add", id = ns(paste0("add_", tables$table_name[i])), icon = icon("plus")),
                 bs4Dash::boxDropdownItem("Edit", id = ns(paste0("modify_", tables$table_name[i])), icon = icon("pen")),
                 bs4Dash::boxDropdownItem("Delete", id = ns(paste0("delete_", tables$table_name[i])), icon = icon("trash"))
               ),
@@ -83,7 +85,8 @@ tableListServer <- function(id, con, schema, data_changed) {
               p(paste("Rows:", tables$rows[i])),
               div(
                 style = "display: flex; justify-content: space-between; align-items: center;",
-                actionButton(ns(paste0("open_", tables$table_name[i])), "Open", style = add_button_theme(), icon = icon("eye"))
+                actionButton(ns(paste0("open_", tables$table_name[i])), "Open", style = add_button_theme(), icon = icon("eye")),
+                actionButton(ns(paste0("add_", tables$table_name[i])), "Add entry", icon = icon("plus"))
               )
             )
           )
@@ -93,6 +96,8 @@ tableListServer <- function(id, con, schema, data_changed) {
 
     observe({
       tables <- get_tables()
+      tables <- tables[tables$table_name != "th2metadata_table", ]
+
       lapply(tables$table_name, function(table_name) {
 
         get_table_structure <- reactive({
@@ -112,17 +117,42 @@ tableListServer <- function(id, con, schema, data_changed) {
           output[[paste0("table_", table_name)]] <- renderDT({
             data_changed()
             data <- DBI::dbGetQuery(con(), paste("SELECT * FROM", table_name))
+            data <- data %>% dplyr::select(-colid)
+
             DT::datatable(data, options = list(scrollX = TRUE))
           })
+        })
+
+        observeEvent(input[[paste0("table_", table_name, "_rows_selected")]], {
+          selected_row <- input[[paste0("table_", table_name, "_rows_selected")]]
+
+          if (length(selected_row) == 0) {
+            showNotification("Please select a row to modify", type = "warning")
+            return()
+          }
+
+          data <- dbGetQuery(con(), paste("SELECT * FROM", table_name))
+          row_data <- data[selected_row, ]
+
+          module_id <- generateID(prefix = "update_test_entry")
+          dbm_selected_row_server(module_id, table_name = table_name, row_data = row_data, selected_row = selected_row, data_changed = data_changed, con = con)
+          showModal(
+            modalDialog(
+              title = "Entry Action", size = "m", easyClose = TRUE,
+              icon = icon("pen"),
+              dbm_selected_row_ui(ns(module_id))
+            )
+          )
         })
 
         # Ajout d'une entrée
         observeEvent(input[[paste0("add_", table_name)]], {
           module_id <- generateID(prefix = "add_entry")
-          addRowServer(id = module_id, table_name = table_name, table_structure = get_table_structure(), con = con)
+          addRowServer(id = module_id, table_name = table_name, table_structure = get_table_structure(), con = con, data_changed = data_changed)
           showModal(modalDialog(
             title = paste("Add Entry to:", table_name),
             size = "xl",
+            easyClose = TRUE,
             bs4Dash::tabBox(
               width = 12, selected = "Add Entry",
               tabPanel("Add Entry",
@@ -145,6 +175,7 @@ tableListServer <- function(id, con, schema, data_changed) {
           showModal(modalDialog(
             title = paste("Modify Table:", table_name),
             size = "xl",
+            easyClose = TRUE,
             bs4Dash::tabBox(
               width = 12, selected = "Add Column",
               tabPanel("Add Column",
@@ -214,6 +245,7 @@ tableListServer <- function(id, con, schema, data_changed) {
             data_changed(data_changed() + 1)
           }, error = function(e) {
             showNotification(paste("Error adding column:", e$message), type = "error")
+            print(paste("Error adding column:", e$message))
           })
         })
 
@@ -227,6 +259,7 @@ tableListServer <- function(id, con, schema, data_changed) {
             data_changed(data_changed() + 1)
           }, error = function(e) {
             showNotification(paste("Error deleting column:", e$message), type = "error")
+            print(paste("Error deleting column:", e$message))
           })
         })
 
@@ -241,6 +274,7 @@ tableListServer <- function(id, con, schema, data_changed) {
             data_changed(data_changed() + 1)
           }, error = function(e) {
             showNotification(paste("Error renaming column:", e$message), type = "error")
+            print(paste("Error renaming column:", e$message))
           })
         })
 
@@ -262,6 +296,7 @@ tableListServer <- function(id, con, schema, data_changed) {
             data_changed(data_changed() + 1)
           }, error = function(e) {
             showNotification(paste("Error changing column type:", e$message), type = "error")
+            print(paste("Error changing column type:", e$message))
           })
         })
 
@@ -280,13 +315,14 @@ tableListServer <- function(id, con, schema, data_changed) {
             data_changed(data_changed() + 1)
           }, error = function(e) {
             showNotification(paste("Error updating unique constraint:", e$message), type = "error")
+            print(paste("Error updating unique constraint:", e$message))
           })
         })
 
         # Suppression de la table
         observeEvent(input[[paste0("delete_", table_name)]], {
           showModal(modalDialog(
-            title = paste("Delete Table:", table_name),
+            title = paste("Delete Table:", table_name), easyClose = TRUE,
             p("Are you sure you want to delete this table? This action cannot be undone."),
             footer = tagList(
               modalButton("Cancel"),
@@ -303,6 +339,7 @@ tableListServer <- function(id, con, schema, data_changed) {
             data_changed(data_changed() + 1)
           }, error = function(e) {
             showNotification(paste("Error deleting table:", e$message), type = "error")
+            print(paste("Error deleting table:", e$message))
           })
           removeModal()
         })

@@ -10,21 +10,14 @@
 createTableUI <- function(id) {
   ns <- NS(id)
   fluidPage(
-  bs4Dash::box(
-    title = "Create New Table",
-    textInput(ns("table_name"), "Table Name"),
-    numericInput(ns("num_columns"), "Number of Columns", value = 1, min = 1),
-    uiOutput(ns("column_inputs")),
-    actionButton(ns("create_table"), "Create Table", style = add_button_theme(), icon = icon("table"))
-  ),
-  actionButton(
-    inputId = ns(glue::glue("create_table_with_csv")),
-    label = glue::glue("Create table with csv"), style = add_button_theme(),
-    icon = icon("table")
+    bs4Dash::box(
+      title = "Create New Table",
+      textInput(ns("table_name"), "Table Name"),
+      numericInput(ns("num_columns"), "Number of Columns", value = 1, min = 1),
+      uiOutput(ns("column_inputs")),
+      actionButton(ns("create_table"), "Create Table", style = add_button_theme(), icon = icon("table"))
+    )
   )
-  )
-
-
 }
 
 #' Server function for creating a new table
@@ -52,8 +45,14 @@ createTableServer <- function(id, con, schema, data_changed, parent_session = NU
       num_columns <- input$num_columns
       lapply(1:num_columns, function(i) {
         fluidRow(
-          column(6, textInput(ns(paste0("column_name_", i)), paste("Column", i, "Name"))),
-          column(6, selectInput(ns(paste0("column_type_", i)), paste("Column", i, "Type"), choices = column_types))
+          column(4, textInput(ns(paste0("column_name_", i)), paste("Column", i, "Name"))),
+          column(4, selectInput(ns(paste0("column_type_", i)), paste("Column", i, "Type"), choices = column_types)),
+          column(4,
+                 conditionalPanel(
+                   condition = paste0("input['", ns(paste0("column_type_", i)), "'] == 'Choice'"),
+                   textInput(ns(paste0("choice_values_", i)), "Enter possible values (comma-separated)")
+                 )
+          )
         )
       })
     })
@@ -66,9 +65,23 @@ createTableServer <- function(id, con, schema, data_changed, parent_session = NU
       columns <- sapply(1:num_columns, function(i) {
         col_name <- input[[paste0("column_name_", i)]]
         col_type <- input[[paste0("column_type_", i)]]
-        paste(col_name, col_type)
+
+        if (col_type == "Choice") {
+          enum_name <- paste0(table_name, "_", col_name, "_enum")
+          enum_values <- input[[paste0("choice_values_", i)]]
+          enum_query <- paste0("CREATE TYPE ", schema(), ".", enum_name, " AS ENUM (", paste0("'", gsub(",", "','", enum_values), "'"), ")")
+          tryCatch({
+            DatabaseConnector::dbExecute(con(), enum_query)
+          }, error = function(e) {
+            showNotification(paste("Error creating enum:", e$message), type = "error")
+          })
+          paste(col_name, enum_name)
+        } else {
+          paste(col_name, col_type)
+        }
       })
 
+      columns <- c("colid varchar(255) PRIMARY KEY", columns)
       columns_str <- paste(columns, collapse = ", ")
 
       query <- paste0("CREATE TABLE ", schema(), ".", table_name, " (", columns_str, ")")
@@ -79,19 +92,9 @@ createTableServer <- function(id, con, schema, data_changed, parent_session = NU
         bs4Dash::updateTabItems(parent_session, "sidebar", selected = "tables")
         showNotification("Table created successfully", type = "message")
       }, error = function(e) {
+        print(paste("Error creating table:", e$message))
         showNotification(paste("Error creating table:", e$message), type = "error")
       })
-    })
-
-    observeEvent(input$create_table_with_csv, {
-      module_id <- generateID()
-      mod_csv_to_db_server(id = module_id, con = con, data_changed = data_changed, parent_session = parent_session)
-      showModal(
-        modalDialog(
-          title = "Add CSV file", size = "xl",
-          mod_csv_to_db_ui(id = ns(module_id))
-        )
-      )
     })
   })
 }
