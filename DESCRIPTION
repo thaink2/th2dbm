@@ -36,7 +36,9 @@ Imports:
     htmltools,
     shinyWidgets,
     tibble,
-    toastui
+    toastui,
+    shiny.info,
+    shinybusy
 Config/testthat/edition: 3
 Suggests: 
     spelling
