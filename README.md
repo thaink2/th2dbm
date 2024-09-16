@@ -14,7 +14,7 @@ We were inspired by the article of [Yu Day](https://shanghai.hosting.nyu.edu/dat
 
 # Demo 
 
-<video src="https://github.com/thaink2/th2dbm/blob/main/inst/video/demo_DBM.mp4"></video>
+<video src="[https://github.com/thaink2/th2dbm/blob/main/inst/video/demo_DBM.mp4](https://github.com/thaink2/th2dbm/blob/main/inst/video/demo_DBM.mp4)"></video>
 
 ## Scope
 
