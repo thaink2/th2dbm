@@ -12,9 +12,9 @@ dbConfigUI <- function(id) {
   bs4Dash::box(
     title = "Database Configuration",
     shiny::textInput(ns("db_name"), "Database Name", value = Sys.getenv('TH_DATABASE')),
-    shiny::textInput(ns("db_host"), "Host", value = Sys.getenv('TH_HOST')),
+    shiny::passwordInput(ns("db_host"), "Host", value = Sys.getenv('TH_HOST')),
     shiny::numericInput(ns("db_port"), "Port", value = Sys.getenv('TH_PORT')),
-    shiny::textInput(ns("db_user"), "Username", value = Sys.getenv('TH_DB_USERNAME')),
+    shiny::passwordInput(ns("db_user"), "Username", value = Sys.getenv('TH_DB_USERNAME')),
     shiny::passwordInput(ns("db_password"), "Password", value = Sys.getenv('TH_DB_PASSWORD') ),
     shiny::textInput(ns("db_schema"), "Schema", value = "public"),
     actionButton(ns("connect_db"), "Connect to Database", style = add_button_theme(), icon = icon("link")),
