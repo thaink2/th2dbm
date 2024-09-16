@@ -53,7 +53,7 @@ dbm_server <- function(input, output, session){
     })
 }
 
-#' bi_basic_app_launcher
+#' dbm_app_launcher
 #' @export
 dbm_app_launcher <- function(target_port = 3838, target_host = '0.0.0.0'){
     if (file.exists("./R/initialize_db_configs.R")) init_envs()
