@@ -11,11 +11,11 @@ createTableUI <- function(id) {
   ns <- NS(id)
   fluidPage(
     bs4Dash::box(
-      title = "Create New Table",
+      title = "Create New Table",width = 12, status = "primary", solidHeader = TRUE, background = "white",
       textInput(ns("table_name"), "Table Name"),
       numericInput(ns("num_columns"), "Number of Columns", value = 1, min = 1),
       uiOutput(ns("column_inputs")),
-      actionButton(ns("create_table"), "Create Table", style = add_button_theme(), icon = icon("table"))
+      uiOutput(ns("create_table"))
     )
   )
 }
@@ -55,6 +55,11 @@ createTableServer <- function(id, con, schema, data_changed, parent_session = NU
           )
         )
       })
+    })
+
+    output$create_table <- renderUI({
+      req(input$table_name)
+      actionButton(ns("create_table"), "Create Table", style = add_button_theme(), icon = icon("table"))
     })
 
     observeEvent(input$create_table, {
