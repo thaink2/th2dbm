@@ -13,7 +13,8 @@ We were inspired by the article of [Yu Day](https://shanghai.hosting.nyu.edu/dat
 # Main features
 
 # Demo 
-![Démo de Database Manager](./inst/video/demo_DBM.mp4){width="1080" height="512"}
+
+<video src="https://github.com/thaink2/th2dbm/blob/main/inst/video/demo_DBM.mp4"></video>
 
 ## Scope
 
