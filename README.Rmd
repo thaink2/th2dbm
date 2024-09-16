@@ -1,10 +1,11 @@
 
-The package serves as an interface to work with relational Database, by do the following actions :
+The package serves as a ususer interface to work with Relational Database, by do the following actions :
 
 -   Visualize your data
 -   Add tables
--   Add variables
--   Manage Access
+-   Add variables : differents type(numerical, ctageorical, logical, UUIDs)
+-   Add entries 
+-   
 
 ## Motivation
 
@@ -13,7 +14,7 @@ We were inspired by the article of [Yu Day](https://shanghai.hosting.nyu.edu/dat
 # Main features
 
 # Demo 
-![Démo de Database Manager](./inst/video/demo_DBM.mp4){width="1080" height="512"}
+![Démo de Database Manager](https://github.com/thaink2/th2dbm/blob/main/inst/video/demo_DBM.mp4){width="1080" height="512"}
 
 ## Scope
 
