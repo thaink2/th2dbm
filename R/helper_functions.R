@@ -60,6 +60,32 @@ prepare_app_header <- function() {
   )
 }
 
+# Fonction pour obtenir la structure de la table
+#'
+#' @export
+get_table_structure <- function(con, table_name) {
+  DBI::dbGetQuery(con, paste0("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '", table_name, "'"))
+}
+
+# Fonction pour obtenir la clé primaire de la table
+#'
+#' @export
+get_primary_key <- function(con, table_name) {
+  result <- dbGetQuery(con, paste0("
+    SELECT a.attname
+    FROM   pg_index i
+    JOIN   pg_attribute a ON a.attrelid = i.indrelid
+                         AND a.attnum = ANY(i.indkey)
+    WHERE  i.indrelid = '", table_name, "'::regclass
+    AND    i.indisprimary;
+  "))
+  if (nrow(result) > 0) {
+    return(result$attname[1])
+  } else {
+    return(NULL)
+  }
+}
+
 #' Set User Default Configurations
 #'
 #' Sets default configurations for a user, including target language and time zone.
@@ -173,7 +199,7 @@ correct_date <- function(current_date) {
 #' @return A unique identifier as a character string.
 #'
 #' @export
-generateID <- function(prefix = "UserEntry") {
+generateID <- function(prefix = "id") {
   sprintf("%s_%s", prefix, uuid::UUIDgenerate())
 }
 

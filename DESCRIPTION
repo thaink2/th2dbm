@@ -1,7 +1,7 @@
 Package: th2dbm
 Type: Package
 Title: database manager by thaink2
-Version: 0.0.0.4
+Version: 0.0.0.6
 Author: Farid Azouaou <farid.azouaou@thaink2.com>
 Maintainer: David Gnaglo <david.ganglo@thaink2.com>
 Description: More about what it does (maybe more than one line)
@@ -24,6 +24,7 @@ Imports:
     magrittr,
     RSQLite,
     shiny,
+    janitor,
     shinyalert,
     shinyDatetimePickers,
     sodium,

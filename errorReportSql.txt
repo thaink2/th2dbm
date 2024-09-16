@@ -1,0 +1,27 @@
+DBMS:
+postgresql
+
+Error:
+org.postgresql.util.PSQLException: ERROR: bind message supplies 0 parameters, but prepared statement "" requires 4
+
+SQL:
+UPDATE tghj12 SET id= $1, uh= $2, ij= $3 WHERE id = $4
+
+R version:
+R version 4.4.0 (2024-04-24 ucrt)
+
+Platform:
+x86_64-w64-mingw32
+
+Attached base packages:
+- stats
+- graphics
+- grDevices
+- utils
+- datasets
+- methods
+- base
+
+Other attached packages:
+- shiny (1.9.1)
+- th2dbm (0.0.0.5)
