@@ -16,15 +16,15 @@ We were inspired by the article of [Yu Day](https://shanghai.hosting.nyu.edu/dat
 
 # Main features
 
-# Demo
+# Walk through demo
 
 ![database viewer/manager](./media/videos/demo_DBM.gif)
 
-
-
 ## Scope
 
+
 ## Data encryption as a must
+
 
 # Interactive Database manager : how to
 
@@ -60,7 +60,9 @@ We recommend that you use [shinylive](https://github.com/posit-dev/r-shinylive) 
 
 ## On Server using Docker
 
-A detailed Dockerfiler is put at your disposal in order to generate your own docker image. We have a public one available on our [DockerHub]()
+A detailed Dockerfiler is put at your disposal in order to generate your own docker image. 
+You can simply use the public docker image available on our [th2dbm docker image](https://hub.docker.com/repository/docker/th2farid/th2dbm/general)
+
 
 # Further Dev
 
