@@ -12,6 +12,9 @@ We were inspired by the article of [Yu Day](https://shanghai.hosting.nyu.edu/dat
 
 # Main features
 
+# Demo 
+![Démo de Database Manager](./inst/video/demo_DBM.mp4){width="1080" height="512"}
+
 ## Scope
 
 ## Data encryption as a must
@@ -30,8 +33,6 @@ Before starting the GUI , first of all you need to set some configs, as follows:
     -   additional params
 
 - Encryption passphrase
-
-  - 
 
 Supported Databases
   - Postgresql
