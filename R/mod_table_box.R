@@ -12,14 +12,6 @@ mod_table_box_server <- function(id, target_table, mod_refresh_file) {
 
     if (!dir.exists(temp_data_dir)) {
       dir.create(temp_data_dir)
-      toast(
-        title = paste(temp_data_dir, "repo created"),
-        options = list(
-          autohide = TRUE,
-          class = "bg-green",
-          position = "topRight"
-        )
-      )
     }
 
     tables_content <- reactive({
@@ -61,7 +53,7 @@ mod_table_box_server <- function(id, target_table, mod_refresh_file) {
         background = "white",
         boxToolSize = "sm",
         dropdownMenu = bs4Dash::boxDropdown(
-          icon = shiny::icon("wrench"),
+          icon = icon("wrench"),
           bs4Dash::boxDropdownItem("Explore", id = ns(paste0("explore_", target_table)), icon = icon("magnifying-glass")),
           bs4Dash::boxDropdownItem("Append", id = ns(paste0("append_", target_table)), icon = icon("plus")),
           bs4Dash::boxDropdownItem("Edit", id = ns(paste0("edit_", target_table)), icon = icon("pen")),

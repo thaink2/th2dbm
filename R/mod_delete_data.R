@@ -1,4 +1,3 @@
-button_theme <- add_button_theme()
 
 #' Module UI pour la suppression de données
 #'
@@ -13,7 +12,7 @@ mod_delete_data_ui <- function(id, target_table) {
   ns <- NS(id)
   showModal(modalDialog(
     title = paste("Delete", target_table, "Data"), size = "xl", easyClose = FALSE, footer = target_table,
-    actionButton(inputId = ns("delete_data"), style = button_theme, icon = icon("trash"), label = "Delete", class = "btn-primary")
+    actionButton(inputId = ns("delete_data"), style = add_button_theme(), icon = icon("trash"), label = "Delete", class = "btn-primary")
   ), )
 }
 
@@ -70,13 +69,9 @@ mod_delete_data_server <- function(id, target_table, mod_refresh_file) {
               }
             },
             error = function(e) {
-              toast(
-                title = "Error deleting data",
-                options = list(
-                  autohide = TRUE,
-                  class = "bg-red",
-                  position = "topRight"
-                )
+              shinyFeedback::showToast(
+                "error",
+                "Error deleting data"
               )
             }
           )

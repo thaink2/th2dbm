@@ -11,7 +11,7 @@ launch_dbm_app <- function(target_port = 3838, target_host = "0.0.0.0") {
   if (file.exists("./R/initialize_db_configs.R")) {
     init_envs()
   }
-  shiny::shinyApp(
+  shinyApp(
     ui = th2dbm::app_ui,
     server = th2dbm::app_server,
     options = list(

@@ -30,46 +30,7 @@ th_shinyalert <-
     )
   }
 
-#' Add Button Theme
-#'
-#' Creates CSS styles for a button with custom colors for text, background, and border.
-#'
-#' @param btn_col The text color of the button.
-#' @param background_col The background color of the button.
-#' @param border_col The border color of the button.
-#'
-#' @return A CSS style string for the button.
-#'
-#' @export
-add_button_theme <- function(btn_col = "#fff", background_col = "#013DFF", border_col = "#013DFF") {
-  style <- glue::glue("color: {btn_col}; background-color: {background_col}; border-color: {border_col};
-                                border-radius: 10px;
-                               border-width: 2px")
-  return(style)
-}
 
-#' Create a Download Button
-#'
-#' Creates a styled download button for Shiny applications.
-#'
-#' @param outputId The ID of the output element associated with the download.
-#' @param label The text label displayed on the button.
-#' @param class Additional CSS classes to apply to the button.
-#' @param ... Other arguments passed to the underlying `tags$a` function.
-#' @param icon The icon to display on the button (default: download icon).
-#'
-#' @return An HTML 'a' tag representing the download button.
-#'
-#' @export
-th2_download_button <- function(outputId, label = "Download", class = NULL, ..., icon = shiny::icon("download")) {
-  tags$a(
-    id = outputId, class = paste(
-      "btn btn-primary shiny-download-link",
-      class
-    ), href = "", target = "_blank", download = NA,
-    label, ...
-  )
-}
 
 #' Prepare the Application Header
 #'
@@ -83,25 +44,16 @@ prepare_app_header <- function() {
   bs4Dash::bs4DashNavbar(
     skin = "light",
     title = bs4Dash::bs4DashBrand(
-      title = bs4Dash::bs4DashBrand(title = "th2dbm", image = app_logo_circle)
+      title = bs4Dash::bs4DashBrand(title = "Database Manager", image = app_logo_circle)
     ),
     rightUi = shiny::tagList(
       shiny::tags$li(
         class = "nav-item dropdown",
         shiny::tags$a(
-          href = "http://supplai.thaink2.com/",
+          href = "https://github.com/thaink2/th2dbm.git",
           target = "_blank",
-          class = "nav-link",
-          shiny::icon("power-off")
-        )
-      ),
-      shiny::tags$li(
-        class = "nav-item dropdown",
-        shiny::actionButton(
-          inputId = "user_button",
-          label = NULL,
-          icon = shiny::icon("user"),
-          class = "nav-link"
+          class = "nav-link btn-primary",
+          shiny::icon("github")
         )
       )
     )
@@ -318,4 +270,64 @@ get_current_url <- function(session = NULL, port = 3838) {
 
   # Afficher l'URL complete
   return(current_url)
+}
+
+#' Read data from inputfile (CSV)
+#' @author Farid Azouaou
+#' @param input_file input file
+#' @return tbl_df object
+
+ghred_tisefka_csv <- function(input_file = NULL, delim = ",") {
+  tisefka_csv <- readr::read_delim(
+    file = input_file,
+    # header = TRUE,
+    delim = delim,
+    na = c("", "NA", "ND", " ", "-", ".", "#")
+  )
+  tisefka_csv <- data.frame(tisefka_csv, check.names = FALSE)
+  return(tisefka_csv)
+}
+
+
+#' Read data from inputfile (Excel)
+#' @author Farid Azouaou
+#' @param input_file inputfile object
+#' @param tawriqt excel sheet name
+#' @return tbl_df object
+
+ghred_tisefka_excel <- function(input_file = NULL, tawriqt = NULL) {
+  tisefka_excel <- readxl::read_excel(
+    path = input_file,
+    # header = TRUE,
+    # delim = ",",
+    sheet = tawriqt,
+    na = c("", "NA", "ND", " ", "-", ".", "#")
+  )
+  tisefka_excel <- data.frame(tisefka_excel, check.names = FALSE)
+  return(tisefka_excel)
+}
+
+#' Read data main function
+#' @author Farid Azouaou
+#' @param input_file input file
+#' @param tala data source (CSV/Excel/Database)
+#' @param tawriqt excel sheet name
+#' @return tbl_df object
+#' @export
+
+ghred_tisefka_aqerru <- function(input_file = NULL, tala = NULL, tawriqt = NULL, delim = NULL) {
+  if (tala == "csv") {
+    tisefka <- ghred_tisefka_csv(input_file = input_file, delim = delim)
+  }
+  if (tala == "xlsx") {
+    tisefka <- ghred_tisefka_excel(input_file = input_file, tawriqt = tawriqt)
+  }
+  if (tala == "txt") {
+    tisefka <- read.table(file = input_file, header = TRUE, sep = "\t", quote = "")
+  }
+
+  tisefka <- tisefka %>%
+    janitor::remove_empty(which = c("cols")) %>%
+    janitor::remove_constant()
+  return(tisefka)
 }

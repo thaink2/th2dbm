@@ -36,7 +36,7 @@ mod_db_tables_boxes_server <- function(id, mod_refresh_file) {
       {
         db_con <- connect_to_database()
 
-        refresh_statement <- shiny::reactiveFileReader(
+        refresh_statement <- reactiveFileReader(
           intervalMillis = 1000,
           session = session,
           filePath = mod_refresh_file,
@@ -54,9 +54,11 @@ mod_db_tables_boxes_server <- function(id, mod_refresh_file) {
         get_tables_list <- function() {
           tryCatch(
             {
-              available_tables <- fetch_data_from_db(table = "th2metadata_table", cols = c("th2db_table"))
-              available_unique_tables <- available_tables %>% dplyr::distinct(th2db_table)
-              return(available_unique_tables)
+              db_con <- connect_to_database()
+              db_tables <- DBI::dbListTables(db_con)
+              db_tables <- db_tables[!db_tables %in% c("th2metadata_table")]
+              DBI::dbDisconnect(db_con)
+              return(db_tables)
             },
             error = function(e) {
               showModal(modalDialog(
@@ -77,16 +79,12 @@ mod_db_tables_boxes_server <- function(id, mod_refresh_file) {
 
         observe({
           req(tables_list())
-          available_tables <- tables_list() %>% dplyr::pull(th2db_table)
+          available_tables <- tables_list()
 
           if (length(available_tables) == 0) {
-            toast(
-              title = "No tables available",
-              options = list(
-                autohide = TRUE,
-                class = "bg-red",
-                position = "topRight"
-              )
+            shinyFeedback::showToast(
+              "error",
+              "No tables available"
             )
           }
 
@@ -109,7 +107,7 @@ mod_db_tables_boxes_server <- function(id, mod_refresh_file) {
             }
           )
           output$db_tables_box <- renderUI({
-            do.call(shiny::fluidRow, table_list)
+            do.call(fluidRow, table_list)
           })
         })
       },

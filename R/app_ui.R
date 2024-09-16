@@ -5,6 +5,7 @@
 #' @import shiny
 #' @export
 app_ui <- function(request) {
+  shinyFeedback::useShinyFeedback(feedback = FALSE)
   tagList(
     # Logique de l'interface utilisateur de l'application
     bs4Dash::bs4DashPage(
@@ -15,13 +16,13 @@ app_ui <- function(request) {
         bs4Dash::bs4SidebarMenu(
           bs4Dash::bs4SidebarMenuItem(
             "Database Manager",
-            icon = shiny::icon("database"),
+            icon = icon("database"),
             tabName = "database_management",
             startExpanded = TRUE,
-            bs4Dash::bs4SidebarMenuSubItem("Create Table", tabName = "create_db_table", icon = shiny::icon("plus")),
-            bs4Dash::bs4SidebarMenuSubItem("Update Table", tabName = "update_db_table", icon = shiny::icon("pen")),
-            bs4Dash::bs4SidebarMenuSubItem("Delete Table", tabName = "del_db_table", icon = shiny::icon("trash")),
-            bs4Dash::bs4SidebarMenuSubItem("View Table", tabName = "view_db_table", icon = shiny::icon("eye"))
+            bs4Dash::bs4SidebarMenuSubItem("Create Table", tabName = "create_db_table", icon = icon("plus")),
+            bs4Dash::bs4SidebarMenuSubItem("Update Table", tabName = "update_db_table", icon = icon("pen")),
+            bs4Dash::bs4SidebarMenuSubItem("Delete Table", tabName = "del_db_table", icon = icon("trash")),
+            bs4Dash::bs4SidebarMenuSubItem("View Table", tabName = "view_db_table", icon = icon("eye"))
           )
         )
       ),
@@ -31,7 +32,7 @@ app_ui <- function(request) {
             "create_db_table",
             bs4Dash::tabBox(
               width = 12, selected = "Add entry",
-              title = "Add entry", icon = shiny::icon("plus"),
+              title = "Add entry", icon = icon("plus"),
               mod_th2_database_management_ui("database")
             )
           ),
@@ -40,11 +41,11 @@ app_ui <- function(request) {
             bs4Dash::tabBox(
               width = 12, selected = "Update Table",
               tabPanel(
-                title = "Update Table", icon = shiny::icon("pen"),
+                title = "Update Table", icon = icon("pen"),
                 mod_th2_database_management_ui("update_database")
               ),
               tabPanel(
-                title = "Update Columns", icon = shiny::icon("pen"),
+                title = "Update Columns", icon = icon("pen"),
                 mod_update_metadata_ui("update_database_col")
               )
             )
@@ -53,7 +54,7 @@ app_ui <- function(request) {
             "del_db_table",
             bs4Dash::tabBox(
               width = 12, selected = "Overview",
-              title = "Overview", icon = shiny::icon("trash"),
+              title = "Overview", icon = icon("trash"),
               mod_th2_database_management_ui("delete_database")
             )
           ),
@@ -61,7 +62,7 @@ app_ui <- function(request) {
             "view_db_table",
             bs4Dash::tabBox(
               width = 12, selected = "Overview",
-              title = "Overview", icon = shiny::icon("eye"),
+              title = "Overview", icon = icon("eye"),
               mod_db_tables_boxes_ui("db_tables_boxes")
             )
           )

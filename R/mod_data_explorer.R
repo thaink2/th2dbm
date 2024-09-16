@@ -22,7 +22,7 @@ mod_data_explorer_server <- function(id, data_temp_file) {
 
     button_theme <- add_button_theme()
 
-    temp_data <- shiny::reactiveFileReader(intervalMillis = 1000, session, filePath = data_temp_file, readFunc = readRDS)
+    temp_data <- reactiveFileReader(intervalMillis = 1000, session, filePath = data_temp_file, readFunc = readRDS)
 
     output$data_view <- DT::renderDT({
       temp_data() %>%
@@ -46,9 +46,9 @@ mod_data_explorer_server <- function(id, data_temp_file) {
     output$data_explore_actions <- renderUI({
       fluidPage(
         fluidRow(
-          column(width = 2, shiny::actionButton(inputId = ns("data_view_action"), style = button_theme, label = "", icon = icon("eye"), class = "btn-primary")),
-          column(width = 2, shiny::actionButton(inputId = ns("data_edit_action"), style = button_theme, label = "", icon = icon("pen"), class = "btn-primary")),
-          column(width = 2, shiny::actionButton(inputId = ns("data_filter_action"), style = button_theme, label = "", icon = icon("filter"), class = "btn-primary"))
+          column(width = 2, actionButton(inputId = ns("data_view_action"), style = button_theme, label = "", icon = icon("eye"), class = "btn-primary")),
+          column(width = 2, actionButton(inputId = ns("data_edit_action"), style = button_theme, label = "", icon = icon("pen"), class = "btn-primary")),
+          column(width = 2, actionButton(inputId = ns("data_filter_action"), style = button_theme, label = "", icon = icon("filter"), class = "btn-primary"))
         )
       )
     })
@@ -76,7 +76,7 @@ mod_data_explorer_server <- function(id, data_temp_file) {
         title = paste("Data Explorer"), easyClose = TRUE, size = "xl",
         filter_data_ui(id = ns("filter_data")),
         footer = list(
-          shiny::actionButton(inputId = ns("filter_data_save"), style = button_theme, label = "Filter", icon = icon("save"), class = "btn-primary"),
+          actionButton(inputId = ns("filter_data_save"), style = button_theme, label = "Filter", icon = icon("save"), class = "btn-primary"),
           modalButton("Cancel", icon = icon("xmark"))
         )
       ))

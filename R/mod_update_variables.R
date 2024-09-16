@@ -1,6 +1,6 @@
 #' Select, rename and convert variables
 #'
-#' @param id Module id. See [shiny::moduleServer()].
+#' @param id Module id. See [moduleServer()].
 #' @param title Module's title, if \code{TRUE} use the default title,
 #'  use \code{NULL} for no title or a \code{shiny.tag} for a custom one.
 #'
@@ -119,14 +119,14 @@ update_variables_server <- function(id, data, height = NULL) {
       })
 
       output$data_info <- renderUI({
-        shiny::req(data_r())
+        req(data_r())
         data <- data_r()
         sprintf(i18n$t("Data has %s observations and %s variables."), nrow(data), ncol(data))
       })
 
       variables_r <- reactive({
-        shiny::validate(
-          shiny::need(data(), i18n$t("No data to display."))
+        validate(
+          need(data(), i18n$t("No data to display."))
         )
         data <- data_r()
         updated_data$x <- NULL

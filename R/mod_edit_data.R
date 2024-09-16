@@ -37,9 +37,7 @@ mod_edit_data_server <- function(id, target_table, mod_refresh_file) {
     c_ids <- "COLUMN_IDs.csv"
 
     output$columns_id <- renderUI({
-      vars_table_metadata <- vars_table_metadata(current_target_table = target_table)
-      req(vars_table_metadata)
-      vars_table <- vars_table_metadata
+      db_con <- connect_to_database()
       colnames(vars_table) <- toupper(colnames(vars_table))
       temp <- 1:nrow(vars_table)
       columns_id <- lapply(temp, function(x) {

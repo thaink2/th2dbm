@@ -32,7 +32,7 @@ html_dependency_datamods <- function() {
 #' @noRd
 toggle_widget <- function(inputId,
                           enable = TRUE,
-                          session = shiny::getDefaultReactiveDomain()) {
+                          session = getDefaultReactiveDomain()) {
   session$sendCustomMessage(
     type = "datamods-toggleWidget",
     message = list(id = session$ns(inputId), enable = enable)
@@ -75,7 +75,7 @@ insert_alert <- function(selector, ...) {
 showUI <- function(selector = NULL,
                    inline = FALSE,
                    id = NULL,
-                   session = shiny::getDefaultReactiveDomain()) {
+                   session = getDefaultReactiveDomain()) {
   if (!is.null(id)) {
     id <- session$ns(id)
   }
@@ -102,7 +102,7 @@ showUI <- function(selector = NULL,
 hideUI <- function(selector = NULL,
                    inline = FALSE,
                    id = NULL,
-                   session = shiny::getDefaultReactiveDomain()) {
+                   session = getDefaultReactiveDomain()) {
   if (!is.null(id)) {
     id <- session$ns(id)
   }
@@ -125,7 +125,7 @@ hideUI <- function(selector = NULL,
 #' @param session The Shiny session object.
 #'
 #' @noRd
-enable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) {
+enable_tab <- function(id, value, session = getDefaultReactiveDomain()) {
   session$sendCustomMessage(
     type = "datamods-enableTab",
     message = list(id = session$ns(id), value = value)
@@ -141,7 +141,7 @@ enable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) {
 #' @param session The Shiny session object.
 #'
 #' @noRd
-disable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) {
+disable_tab <- function(id, value, session = getDefaultReactiveDomain()) {
   session$sendCustomMessage(
     type = "datamods-disableTab",
     message = list(id = session$ns(id), value = value)
@@ -159,7 +159,7 @@ disable_tab <- function(id, value, session = shiny::getDefaultReactiveDomain()) 
 #'
 #' @importFrom htmltools doRenderTags
 #' @noRd
-update_tab_label <- function(id, value, label, session = shiny::getDefaultReactiveDomain()) {
+update_tab_label <- function(id, value, label, session = getDefaultReactiveDomain()) {
   session$sendCustomMessage(
     type = "datamods-updateTabLabel",
     message = list(id = session$ns(id), value = value, label = doRenderTags(label))
@@ -186,7 +186,7 @@ make_success_alert <- function(data,
                                trigger_return,
                                btn_show_data,
                                extra = NULL,
-                               session = shiny::getDefaultReactiveDomain()) {
+                               session = getDefaultReactiveDomain()) {
   if (identical(trigger_return, "button")) {
     success_message <- tagList(
       tags$b(phosphoricons::ph("check", weight = "bold"), i18n("Data ready to be imported!")),
@@ -230,7 +230,7 @@ make_success_alert <- function(data,
 #' @noRd
 insert_error <- function(mssg = i18n("Something went wrong..."),
                          selector = "import",
-                         session = shiny::getDefaultReactiveDomain()) {
+                         session = getDefaultReactiveDomain()) {
   insert_alert(
     selector = session$ns(selector),
     status = "danger",
@@ -277,7 +277,7 @@ help_popup <- function(text) {
 #'
 #' @importFrom shiny actionButton icon getDefaultReactiveDomain
 #' @noRd
-button_import <- function(session = shiny::getDefaultReactiveDomain()) {
+button_import <- function(session = getDefaultReactiveDomain()) {
   actionButton(
     inputId = session$ns("confirm"),
     label = tagList(

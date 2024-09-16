@@ -30,7 +30,7 @@ mod_th2db_overview_server <- function(id, target_table = "th2metadata_table", cu
     ns <- session$ns
 
     mod_refresh_file <- create_refresh_helper_file(mod_id = id)
-    refresh_statement <- shiny::reactiveFileReader(intervalMillis = 3000, session = session, filePath = mod_refresh_file, readFunc = readRDS)
+    refresh_statement <- reactiveFileReader(intervalMillis = 3000, session = session, filePath = mod_refresh_file, readFunc = readRDS)
 
     db_overview <- reactive({
       req(refresh_statement())

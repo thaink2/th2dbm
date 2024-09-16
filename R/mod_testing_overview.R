@@ -21,7 +21,7 @@ mod_th2use_db_table_ui <- function(id) {
         column(width = 3, uiOutput(ns("testing_add_button"))),
         column(width = 3, uiOutput(ns("permission_choice"))),
         column(width = 3, uiOutput(ns("grant_add_button"))),
-        column(width = 3, downloadButton(ns("downloadData"), "Download", icon = shiny::icon("download")))
+        column(width = 3, downloadButton(ns("downloadData"), "Download", icon = icon("download")))
       ),
       DT::dataTableOutput(ns("use_db_table_dt"))
     )
@@ -36,7 +36,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
     ns <- session$ns
 
     mod_refresh_file <- create_refresh_helper_file(mod_id = id)
-    refresh_statement <- shiny::reactiveFileReader(intervalMillis = 3000, session = session, filePath = mod_refresh_file, readFunc = readRDS)
+    refresh_statement <- reactiveFileReader(intervalMillis = 3000, session = session, filePath = mod_refresh_file, readFunc = readRDS)
 
     output$permission_choice <- renderUI({
       if (target_table %in% current_permission_table()) {

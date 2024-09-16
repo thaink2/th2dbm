@@ -3,7 +3,7 @@
 #' @description Module generate inputs to filter `data.frame` according column's type.
 #'  Code to reproduce the filter is returned as an expression with filtered data.
 #'
-#' @param id Module id. See [shiny::moduleServer()].
+#' @param id Module id. See [moduleServer()].
 #' @param show_nrow Show number of filtered rows and total.
 #' @param max_height Maximum height for filters panel, useful
 #'  if you have many variables to filter and limited space.
@@ -43,23 +43,23 @@ filter_data_ui <- function(id,
   )
 }
 
-#' @param data [shiny::reactive()] function returning a
+#' @param data [reactive()] function returning a
 #'  \code{data.frame} to filter.
-#' @param vars [shiny::reactive()] function returning a
+#' @param vars [reactive()] function returning a
 #'  `character` vector of variables for which to add a filter.
 #'  If a named `list`, names are used as labels.
-#' @param name [shiny::reactive()] function returning a
+#' @param name [reactive()] function returning a
 #'  `character` string representing `data` name, only used for code generated.
-#' @param defaults [shiny::reactive()] function returning a
+#' @param defaults [reactive()] function returning a
 #'  named `list` of variable:value pairs which will be used to set the filters.
 #' @param drop_ids Drop columns containing more than 90% of unique values, or than 50 distinct values.
 #' Use `FALSE` to disable or use `list(p = 0.9, n = 50)` to customize threshold values.
 #' @param widget_char Widget to use for `character` variables: [shinyWidgets::pickerInput()]
-#'  or [shiny::selectInput()] (default).
+#'  or [selectInput()] (default).
 #' @param widget_num Widget to use for `numeric` variables: [shinyWidgets::numericRangeInput()]
-#'  or [shiny::sliderInput()] (default).
-#' @param widget_date Widget to use for `date/time` variables: [shiny::dateRangeInput()]
-#'  or [shiny::sliderInput()] (default).
+#'  or [sliderInput()] (default).
+#' @param widget_date Widget to use for `date/time` variables: [dateRangeInput()]
+#'  or [sliderInput()] (default).
 #' @param label_na Label for missing value widget.
 #' @param value_na Default value for all NA's filters.
 #'

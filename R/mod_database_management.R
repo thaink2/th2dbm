@@ -14,9 +14,9 @@
 mod_th2_database_management_ui <- function(id) {
   ns <- NS(id)
   fluidRow(
-    column(width = 2, uiOutput(ns("create_table"))),
-    column(width = 2, uiOutput(ns("create_table_with_csv"))),
-    column(width = 2, uiOutput(ns("del_table_name"))),
+    column(width = 3, uiOutput(ns("create_table"))),
+    column(width = 3, uiOutput(ns("create_table_with_csv"))),
+    column(width = 3, uiOutput(ns("del_table_name"))),
   )
 }
 
@@ -48,7 +48,7 @@ mod_th2_database_management_server <-
       ns <- session$ns
 
       mod_refresh_file <- create_refresh_helper_file(mod_id = id)
-      refresh_statement <- shiny::reactiveFileReader(intervalMillis = 3000, session = session, filePath = mod_refresh_file, readFunc = readRDS)
+      refresh_statement <- reactiveFileReader(intervalMillis = 3000, session = session, filePath = mod_refresh_file, readFunc = readRDS)
 
       c_ids <- "COLUMN_IDs.csv"
       if (file.exists(c_ids)) {
@@ -84,7 +84,7 @@ mod_th2_database_management_server <-
           actionButton(
             inputId = ns(glue::glue("create_table_with_csv")),
             label = glue::glue("Create table with csv"), style = add_button_theme(),
-            icon = icon("plus")
+            icon = icon("table")
           )
         }
       })
