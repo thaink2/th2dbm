@@ -31,7 +31,7 @@ mod_th2use_db_table_ui <- function(id) {
 #' mod_th2use_db_table_server
 #'
 #' @export
-mod_th2use_db_table_server <- function(id, target_table = "test_table", current_user = Sys.getenv("SHINYPROXY_USERNAME")) {
+mod_th2use_db_table_server <- function(id, target_table = "test_table", current_user = Sys.getenv("SHINYPROXY_USERNAME"), data_change = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -102,10 +102,10 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
       }
       db_meta_list <- list(target_table = target_table)
       module_id <- generateID(prefix = target_table)
-      mod_th2new_entry_server(id = module_id, db_meta = db_meta_list, refresh_file = mod_refresh_file)
+      mod_th2new_entry_server(id = module_id, db_meta = db_meta_list, refresh_file = mod_refresh_file, data_change = data_change)
       showModal(
         modalDialog(
-          title = "Add entry", size = "l",
+          title = "Add entry", size = "l", easyClose = TRUE,
           mod_th2new_entry_ui(id = ns(module_id))
         )
       )
@@ -117,7 +117,7 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
       mod_ml_permissions_server(id = module_id, target_perm_table = target_table, action = "add", refresh_file = mod_refresh_file)
       showModal(
         modalDialog(
-          title = "Permissions", size = "l",
+          title = "Permissions", size = "l", easyClose = TRUE,
           mod_ml_permissions_ui(ns(module_id))
         )
       )
@@ -167,10 +167,10 @@ mod_th2use_db_table_server <- function(id, target_table = "test_table", current_
       rows_selected <- input$use_db_table_dt_rows_selected
       db_meta_list <- list(target_table = target_table, target_row = use_db_table()[rows_selected, ])
       module_id <- generateID(prefix = "update_test_entry")
-      mod_row_selected_options_server(module_id, target_table = target_table, target_row = use_db_table()[rows_selected, ], refresh_file = mod_refresh_file)
+      mod_row_selected_options_server(module_id, target_table = target_table, target_row = use_db_table()[rows_selected, ], refresh_file = mod_refresh_file, data_change = data_change)
       showModal(
         modalDialog(
-          title = "Entry Action", size = "m",
+          title = "Entry Action", size = "m", easyClose = TRUE,
           icon = icon("pen"),
           mod_row_selected_options_ui(ns(module_id))
         )

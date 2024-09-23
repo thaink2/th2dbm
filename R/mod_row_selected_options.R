@@ -29,7 +29,7 @@ mod_row_selected_options_ui <- function(id) {
 #' @param refresh_file The path to the file used for refreshing the module.
 #'
 #' @export
-mod_row_selected_options_server <- function(id, target_table = "test_table", current_user = Sys.getenv("SHINYPROXY_USERNAME"), target_row = data.frame(), refresh_file = NULL) {
+mod_row_selected_options_server <- function(id, target_table = "test_table", current_user = Sys.getenv("SHINYPROXY_USERNAME"), target_row = data.frame(), refresh_file = NULL, data_change = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     output$options_buttons <- renderUI({
@@ -50,10 +50,10 @@ mod_row_selected_options_server <- function(id, target_table = "test_table", cur
       db_meta_list <- list(target_table = target_table, target_row = target_row)
       module_id <- generateID(prefix = "update_selected_row")
 
-      mod_th2new_entry_server(id = module_id, db_meta = db_meta_list, refresh_file = refresh_file)
+      mod_th2new_entry_server(id = module_id, db_meta = db_meta_list, refresh_file = refresh_file, data_change = data_change)
       showModal(
         modalDialog(
-          title = "Update entry", size = "l",
+          title = "Update entry", size = "l", easyClose = TRUE,
           mod_th2new_entry_ui(ns(module_id))
         )
       )

@@ -2,10 +2,11 @@ DBMS:
 postgresql
 
 Error:
-org.postgresql.util.PSQLException: ERROR: bind message supplies 0 parameters, but prepared statement "" requires 4
+org.postgresql.util.PSQLException: ERROR: relation "th2_ml_permissions" does not exist
+  Position : 13
 
 SQL:
-UPDATE tghj12 SET id= $1, uh= $2, ij= $3 WHERE id = $4
+DELETE FROM th2_ml_permissions WHERE TH2DB_TABLE = 'azerty'
 
 R version:
 R version 4.4.0 (2024-04-24 ucrt)
@@ -24,4 +25,4 @@ Attached base packages:
 
 Other attached packages:
 - shiny (1.9.1)
-- th2dbm (0.0.0.5)
+- th2dbm (0.0.0.7)

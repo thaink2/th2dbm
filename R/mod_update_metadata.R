@@ -38,6 +38,7 @@ mod_update_metadata_server <-
         showModal(modalDialog(
           size = "l",
           title = "Table update",
+          easyClose = TRUE,
           fluidPage(
             fluidRow(
               column(width = 2, uiOutput(ns("update_table_name")))

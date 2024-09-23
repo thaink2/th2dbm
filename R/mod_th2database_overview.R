@@ -25,7 +25,7 @@ mod_th2db_overview_ui <- function(id) {
 #' mod_th2use_db_table_server
 #'
 #' @export
-mod_th2db_overview_server <- function(id, target_table = "th2metadata_table", current_user = Sys.getenv("SHINYPROXY_USERNAME")) {
+mod_th2db_overview_server <- function(id, target_table = "th2metadata_table", current_user = Sys.getenv("SHINYPROXY_USERNAME"), data_change = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -69,10 +69,10 @@ mod_th2db_overview_server <- function(id, target_table = "th2metadata_table", cu
       rows_selected <- input$db_overview_rows_selected
       db_meta_list <- list(target_table = target_table, target_row = db_overview()[rows_selected, ])
       module_id <- generateID(prefix = "update_meta_entry")
-      mod_row_selected_options_server(module_id, target_table = target_table, target_row = db_overview()[rows_selected, ], refresh_file = mod_refresh_file)
+      mod_row_selected_options_server(module_id, target_table = target_table, target_row = db_overview()[rows_selected, ], refresh_file = mod_refresh_file, data_change = data_change)
       showModal(
         modalDialog(
-          title = "Entry Action", size = "m",
+          title = "Entry Action", size = "m", easyClose = TRUE,
           icon = icon("pen"),
           mod_row_selected_options_ui(ns(module_id))
         )

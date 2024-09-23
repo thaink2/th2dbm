@@ -34,6 +34,7 @@ mod_th2_entry_server <- function(id, entry_data = NULL, current_user = Sys.geten
         if (is.null(entry_data)) {
           entry_data <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
         }
+
         shinyDatetimePickers::datetimeMaterialPickerInput(inputId = ns("entry_value"), label = "", value = entry_data)
       } else if (entry_meta$entry_type %in% c("BOOLEAN", "boolean")) {
         selectInput(inputId = ns("entry_value"), label = "", choices = c(TRUE, FALSE), selected = entry_data)
@@ -127,12 +128,13 @@ mod_th2new_entry_ui <- function(id) {
 #'
 #' @export
 mod_th2new_entry_server <- function(id, db_meta = list(
-                                      target_table = "test_table",
-                                      current_user = Sys.getenv("SHINYPROXY_USERNAME"),
-                                      target_row = data.frame(),
-                                      hidden_vars = list()
-                                    ),
-                                    refresh_file = NULL) {
+  target_table = "test_table",
+  current_user = Sys.getenv("SHINYPROXY_USERNAME"),
+  target_row = data.frame(),
+  hidden_vars = list()
+),
+  data_change = NULL,
+refresh_file = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     target_table <- db_meta$target_table
@@ -154,7 +156,7 @@ mod_th2new_entry_server <- function(id, db_meta = list(
           current_row_type <- metadata[x, "VAR_TYPE"]
           current_row_value <- current_row[1, metadata[x, "VAR_ID"]]
           if (current_row_type == "date_time") {
-            current_row_value <- paste(as.POSIXct(as.numeric(current_row_value)))
+            current_row_value <<- paste(as.POSIXct(as.numeric(current_row_value)))
           }
 
           mod_th2_entry_server(
@@ -188,44 +190,45 @@ mod_th2new_entry_server <- function(id, db_meta = list(
         } else {
           label_text <- "Update"
         }
-        actionButton(inputId = ns("save_update_entries"), label = label_text, style = add_button_theme(), icon = icon("save"))
+        actionButton(inputId = ns("save_update_entries"), label = label_text, icon = icon("save"))
       }
     })
 
 
     observeEvent(input$save_update_entries,
-      {
-        if (target_table == "data_connection_params") {
-          entry_values_df <- data.frame(entry_values())
-          cols_to_encrypt <- names(entry_values_df)[grepl("^PARAM", names(entry_values_df))]
-          entry_values_df[cols_to_encrypt] <- lapply(entry_values_df[cols_to_encrypt], encrypt_column)
-        } else {
-          entry_values_df <- data.frame(entry_values())
-        }
-        entry_value_encrypt <- entry_values_df
+                 {
+                   if (target_table == "data_connection_params") {
+                     entry_values_df <<- data.frame(entry_values())
+                     cols_to_encrypt <- names(entry_values_df)[grepl("^PARAM", names(entry_values_df))]
+                     entry_values_df[cols_to_encrypt] <- lapply(entry_values_df[cols_to_encrypt], encrypt_column)
+                   } else {
+                     entry_values_df <- data.frame(entry_values())
+                   }
+                   entry_value_encrypt <<- entry_values_df
 
-        if (is.null(db_meta$target_row) || nrow(db_meta$target_row) == 0) {
-          response <- add_entry_to_table(new_entry = entry_values_df, target_table = db_meta$target_table)
-        } else {
-          response <- update_entry_in_table(
-            updated_entry = data.frame(entry_values()),
-            target_table = db_meta$target_table,
-            unique_id_col = "COL_ID",
-            unique_id_val = db_meta$target_row[1, "COL_ID"]
-          ) # fonction qui est dans database_helper
-        }
-        remove_shiny_inputs(id = id, .input = input)
-        saveRDS(object = Sys.time(), file = refresh_file)
-        removeModal()
-        th2dbm::th_shinyalert(
-          title = "New Entry",
-          text = glue::glue(response$message),
-          confirmButtonCol = "#013DFF",
-          type = response$status
-        )
-      },
-      ignoreNULL = TRUE,
-      ignoreInit = TRUE
+                   if (is.null(db_meta$target_row) || nrow(db_meta$target_row) == 0) {
+                     response <- add_entry_to_table(new_entry = entry_values_df, target_table = db_meta$target_table)
+                   } else {
+                     response <- update_entry_in_table(
+                       updated_entry = data.frame(entry_values()),
+                       target_table = db_meta$target_table,
+                       unique_id_col = "COL_ID",
+                       unique_id_val = db_meta$target_row[1, "COL_ID"]
+                     ) # fonction qui est dans database_helper
+                   }
+                   remove_shiny_inputs(id = id, .input = input)
+                   refresh_file %>% saveRDS(object = Sys.time(), file = .)
+                   removeModal()
+                   data_change(data_change() + 1)
+                   th2product::th_shinyalert(
+                     title = "New Entry",
+                     text = glue::glue(response$message),
+                     confirmButtonCol = "#013DFF",
+                     type = response$status
+                   )
+                 },
+                 ignoreNULL = TRUE,
+                 ignoreInit = TRUE
     )
   })
 }

@@ -28,7 +28,7 @@ mod_db_tables_boxes_ui <- function(id) {
 #' @param mod_refresh_file The path to the file used for refreshing the module.
 #'
 #' @export
-mod_db_tables_boxes_server <- function(id, mod_refresh_file) {
+mod_db_tables_boxes_server <- function(id, mod_refresh_file, data_change = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -73,7 +73,7 @@ mod_db_tables_boxes_server <- function(id, mod_refresh_file) {
         }
 
         tables_list <- reactive({
-          req(refresh_statement())
+          req(refresh_statement(), data_change())
           get_tables_list()
         })
 
@@ -92,7 +92,7 @@ mod_db_tables_boxes_server <- function(id, mod_refresh_file) {
             {
               lapply(available_tables, function(x) {
                 module_id <- th2dbm::generateID(prefix = "data_card")
-                mod_table_box_server(id = module_id, target_table = x, mod_refresh_file = mod_refresh_file)
+                mod_table_box_server(id = module_id, target_table = x, mod_refresh_file = mod_refresh_file, data_change = data_change)
                 column(width = 4, mod_table_box_ui(id = ns(module_id)))
               })
             },

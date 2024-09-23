@@ -43,12 +43,9 @@ mod_th2_database_management_ui <- function(id) {
 #' @importFrom glue glue
 
 mod_th2_database_management_server <-
-  function(id, current_user = Sys.getenv("SHINYPROXY_USERNAME"), menu_items = NULL, action = "create", mod_refresh_file) {
+  function(id, current_user = Sys.getenv("SHINYPROXY_USERNAME"), menu_items = NULL, action = "create", mod_refresh_file, data_change = NULL, parent_session = NULL) {
     moduleServer(id, function(input, output, session) {
       ns <- session$ns
-
-      mod_refresh_file <- create_refresh_helper_file(mod_id = id)
-      refresh_statement <- reactiveFileReader(intervalMillis = 3000, session = session, filePath = mod_refresh_file, readFunc = readRDS)
 
       c_ids <- "COLUMN_IDs.csv"
       if (file.exists(c_ids)) {
@@ -94,7 +91,7 @@ mod_th2_database_management_server <-
         mod_csv_to_db_server(id = module_id)
         showModal(
           modalDialog(
-            title = "Add CSV file", size = "l",
+            title = "Add CSV file", size = "l", easyClose = TRUE,
             mod_csv_to_db_ui(id = ns(module_id))
           )
         )
@@ -104,12 +101,13 @@ mod_th2_database_management_server <-
 
       observeEvent(input$create_table, {
         showModal(modalDialog(
-          size = "l",
+          size = "xl",
           title = "Important message",
+          easyClose = TRUE,
           fluidPage(
             fluidRow(
-              column(width = 2, uiOutput(ns("table_name"))),
-              column(width = 2, uiOutput(ns("table_num_items")))
+              column(width = 3, uiOutput(ns("table_name"))),
+              column(width = 3, uiOutput(ns("table_num_items")))
             ),
             uiOutput(ns("columns_id")),
             uiOutput(ns("create_table_button"))
@@ -161,10 +159,11 @@ mod_th2_database_management_server <-
         showModal(modalDialog(
           size = "l",
           title = "Table update",
+          easyClose = TRUE,
           fluidPage(
             fluidRow(
-              column(width = 2, uiOutput(ns("update_table_name"))),
-              column(width = 2, uiOutput(ns("table_num_items")))
+              column(width = 3, uiOutput(ns("update_table_name"))),
+              column(width = 3, uiOutput(ns("table_num_items")))
             ),
             uiOutput(ns("columns_id")),
             uiOutput(ns("create_table_button"))
@@ -206,10 +205,10 @@ mod_th2_database_management_server <-
               db_con <- connect_to_database()
               delete_query <- sprintf("DELETE FROM th2metadata_table WHERE TH2DB_TABLE = '%s'", target_table)
               DBI::dbExecute(db_con, delete_query)
-              DBI::dbExecute(db_con, "DELETE FROM th2_ml_permissions WHERE TH2DB_TABLE = '%s'", target_table)
               DBI::dbExecute(db_con, glue::glue("DROP TABLE IF EXISTS {target_table}"))
               DBI::dbDisconnect(db_con)
               label_text <- "Entry successfully deleted"
+              data_change(data_change() + 1)
               saveRDS(object = Sys.time(), file = mod_refresh_file)
               th2dbm::th_shinyalert(
                 title = "Delete Entry",
@@ -294,27 +293,23 @@ mod_th2_database_management_server <-
 
         test_fields <- test_fields_type
         bd_response <- create_update_metadata(table_metadata = test_fields_type, action_table = action)
-
-        if (input$table_name != "th2_ml_permissions") {
-          permissions_value <- data.frame(
-            OBJECT_ID = input$table_name, OBJECT_CREATOR = current_user,
-            PERMITTED_USERS = current_user, OBJECT_TYPE = "db_table",
-            PERMISSION_LEVEL = "Owner", PERMISSION_TIME = paste(Sys.time())
+        if(bd_response$status == "success") {
+          file.remove(c_ids)
+          # Fermer le modal
+          saveRDS(object = Sys.time(), file = mod_refresh_file)
+          removeModal()
+          data_change(data_change() + 1)
+          th2dbm::th_shinyalert(
+            title = glue::glue("{input$table_name} created successfully"),
+            text = "",
+            confirmButtonCol = "#013DFF",
+            type = "success"
           )
-
-          add_entry_to_table(new_entry = permissions_value, target_table = "th2_ml_permissions")
+          bs4Dash::updateTabItems(parent_session, "sidebar", selected = "tables")
         }
-        th2dbm::th_shinyalert(
-          title = glue::glue("{input$table_name} created successfully"),
-          text = "",
-          confirmButtonCol = "#013DFF",
-          type = "success"
-        )
 
-        file.remove(c_ids)
-        # Fermer le modal
-        saveRDS(object = Sys.time(), file = mod_refresh_file)
-        removeModal()
+
+
       })
     })
   }

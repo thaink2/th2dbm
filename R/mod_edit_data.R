@@ -12,6 +12,7 @@ mod_edit_data_ui <- function(id) {
   showModal(modalDialog(
     size = "l",
     title = "Table update",
+    easyClose = TRUE,
     fluidPage(
       uiOutput(ns("columns_id")),
       uiOutput(ns("create_table_button"))
@@ -30,7 +31,7 @@ mod_edit_data_ui <- function(id) {
 #' @param mod_refresh_file The path to the file used for refreshing the module.
 #'
 #' @export
-mod_edit_data_server <- function(id, target_table, mod_refresh_file) {
+mod_edit_data_server <- function(id, target_table, mod_refresh_file, data_change = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -38,6 +39,8 @@ mod_edit_data_server <- function(id, target_table, mod_refresh_file) {
 
     output$columns_id <- renderUI({
       db_con <- connect_to_database()
+      vars_table <- vars_table_metadata(current_target_table = target_table)
+      req(vars_table_metadata)
       colnames(vars_table) <- toupper(colnames(vars_table))
       temp <- 1:nrow(vars_table)
       columns_id <- lapply(temp, function(x) {
@@ -90,6 +93,7 @@ mod_edit_data_server <- function(id, target_table, mod_refresh_file) {
         confirmButtonCol = "#013DFF",
         type = "success"
       )
+      data_change(data_change() + 1)
       file.remove(c_ids)
       # Fermer le modal
       saveRDS(object = Sys.time(), file = mod_refresh_file)

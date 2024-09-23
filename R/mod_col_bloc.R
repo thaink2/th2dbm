@@ -49,8 +49,8 @@ mod_col_bloc_server <- function(id, tab_name = "test_table",
       columns_types <- c("text", "numeric", "choices", "text_area", "date_time", "boolean", "current_user", "password", "uuid", "CHOOSE_FROM_TABLE_var") # CHOOSE_FROM_TABLE_var
 
       fluidRow(
-        column(width = 2, textInput(inputId = ns("column_name_id"), label = glue::glue("Column name"), value = meta$col_name)),
-        column(width = 2, checkboxInput(inputId = ns("primary_key"), label = glue::glue("Unique"), value = meta$col_unique)),
+        column(width = 3, textInput(inputId = ns("column_name_id"), label = glue::glue("Column name"), value = meta$col_name)),
+        column(width = 2, br(), checkboxInput(inputId = ns("primary_key"), label = glue::glue("Unique"), value = meta$col_unique)),
         column(width = 3, selectInput(inputId = ns("column_type_id"), label = "Column type", choices = columns_types, selected = meta$col_type)),
         column(width = 2, uiOutput(ns("COLUMN_CHOICES"))),
         column(width = 2, uiOutput(ns("CHOOSE_FROM_VAR")))

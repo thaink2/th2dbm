@@ -11,7 +11,7 @@
 mod_delete_data_ui <- function(id, target_table) {
   ns <- NS(id)
   showModal(modalDialog(
-    title = paste("Delete", target_table, "Data"), size = "xl", easyClose = FALSE, footer = target_table,
+    title = paste("Delete", target_table, "Data"), size = "xl", easyClose = TRUE, footer = target_table,
     actionButton(inputId = ns("delete_data"), style = add_button_theme(), icon = icon("trash"), label = "Delete", class = "btn-primary")
   ), )
 }
@@ -31,7 +31,7 @@ mod_delete_data_ui <- function(id, target_table) {
 #' @importFrom shiny moduleServer observeEvent
 #' @importFrom shinyalert shinyalert
 #' @export
-mod_delete_data_server <- function(id, target_table, mod_refresh_file) {
+mod_delete_data_server <- function(id, target_table, mod_refresh_file, data_change = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -55,11 +55,10 @@ mod_delete_data_server <- function(id, target_table, mod_refresh_file) {
                 db_con <- connect_to_database()
                 delete_query <- sprintf("DELETE FROM th2metadata_table WHERE TH2DB_TABLE = '%s'", target_table)
                 DBI::dbExecute(db_con, delete_query)
-                DBI::dbExecute(db_con, "DELETE FROM th2_ml_permissions WHERE TH2DB_TABLE = '%s'", target_table)
                 DBI::dbExecute(db_con, glue::glue("DROP TABLE IF EXISTS {target_table}"))
                 DBI::dbDisconnect(db_con)
                 label_text <- "Entry successfully deleted"
-
+                data_change(data_change() + 1)
                 th2dbm::th_shinyalert(
                   title = "Delete Entry",
                   confirmButtonCol = "#013DFF",
@@ -69,10 +68,8 @@ mod_delete_data_server <- function(id, target_table, mod_refresh_file) {
               }
             },
             error = function(e) {
-              shinyFeedback::showToast(
-                "error",
-                "Error deleting data"
-              )
+              showNotification(glue::glue("Error deleting entry: {e$message}"), type = "error")
+              print(glue::glue("Error deleting entry: {e$message}"))
             }
           )
           saveRDS(object = Sys.time(), file = mod_refresh_file)

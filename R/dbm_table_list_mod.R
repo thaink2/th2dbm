@@ -148,7 +148,7 @@ tableListServer <- function(id, con, schema, data_changed) {
         # Ajout d'une entrée
         observeEvent(input[[paste0("add_", table_name)]], {
           module_id <- generateID(prefix = "add_entry")
-          addRowServer(id = module_id, table_name = table_name, table_structure = get_table_structure(), con = con, data_changed = data_changed)
+          addRowServer(id = module_id, table_name = table_name, schema = schema(), table_structure = get_table_structure(), con = con, data_changed = data_changed)
           showModal(modalDialog(
             title = paste("Add Entry to:", table_name),
             size = "xl",
