@@ -262,6 +262,7 @@ create_update_metadata <- function(table_metadata = NULL, action_table = "create
       "DELETE FROM th2metadata_table WHERE TH2DB_TABLE = '{target_table}'"
     )
     DBI::dbExecute(db_con, statement = query_statement)
+
   } else {
     # Pour "create", création de la nouvelle table avec les champs spécifiés
     DBI::dbCreateTable(conn = db_con, name = target_table, fields = data_fields)
@@ -274,7 +275,7 @@ create_update_metadata <- function(table_metadata = NULL, action_table = "create
   # Déconnexion de la base de données
   DatabaseConnector::disconnect(connection = db_con)
   if (exists("db_con")) rm(db_con)
-  return("metadata updated")
+  return(list(status = "success", message = "Metadata created successfully"))
 }
 
 # ==============================================================================
