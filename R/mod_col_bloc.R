@@ -30,7 +30,6 @@ mod_col_bloc_ui <- function(id) {
 #'   - `col_choose_var`: The column to choose from another table (if applicable).
 #'   - `col_choose_tab`: The table to choose a column from (if applicable).
 #' @param indice An index or identifier for the column.
-#'
 #' @export
 mod_col_bloc_server <- function(id, tab_name = "test_table",
                                 current_user = Sys.getenv("SHINYPROXY_USERNAME"),
@@ -47,7 +46,6 @@ mod_col_bloc_server <- function(id, tab_name = "test_table",
     # UI pour l'entrée des données
     output$columns_id <- renderUI({
       columns_types <- c("text", "numeric", "choices", "text_area", "date_time", "boolean", "current_user", "password", "uuid", "CHOOSE_FROM_TABLE_var") # CHOOSE_FROM_TABLE_var
-
       fluidRow(
         column(width = 2, textInput(inputId = ns("column_name_id"), label = glue::glue("Column name"), value = meta$col_name)),
         column(width = 2, checkboxInput(inputId = ns("primary_key"), label = glue::glue("Unique"), value = meta$col_unique)),

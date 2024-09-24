@@ -44,42 +44,16 @@ createTableServer <- function(id, con, schema, data_changed, parent_session = NU
       file.remove(c_ids)
     }
 
-    # output$column_inputs <- renderUI({
-    #   num_columns <- input$num_columns
-    #   lapply(1:num_columns, function(i) {
-    #     fluidRow(
-    #       column(4, textInput(ns(paste0("column_name_", i)), paste("Column", i, "Name"))),
-    #       column(4, selectizeInput(ns(paste0("column_type_", i)), paste("Column", i, "Type"),
-    #                                choices = column_types,
-    #                                options = list(create = FALSE))),
-    #       column(4,
-    #              conditionalPanel(
-    #                condition = paste0("input['", ns(paste0("column_type_", i)), "'] == 'Choice'"),
-    #                selectizeInput(ns(paste0("choice_values_", i)), "Add choices",
-    #                               choices = NULL,
-    #                               multiple = TRUE,
-    #                               options = list(create = TRUE, plugins = list("remove_button")))
-    #              )
-    #       )
-    #     )
-    #   })
-    # })
-    observeEvent(input$num_columns, {
-      req(input$num_columns, input$table_name)
-      temp <- 1:input$table_num_items
-      lapply(temp, function(i) {
-        new_col_id <- generateID(prefix = glue::glue("{input$table_name}_"))
-        mod_col_bloc_server(paste0("column_", i), tab_name = input$table_name, indice = new_col_id)
-      })
-    })
 
-    output$columns_id <- renderUI({
+    output$column_inputs  <- renderUI({
+      # req(input$table_num_items)
       req(input$num_columns)
       temp <- 1:input$num_columns
-      columns_id <- lapply(temp, function(i) {
-        mod_col_bloc_ui(ns(paste0("column_", i)))
+      lapply(temp, function(i) {
+        new_col_id <- generateID(prefix = glue::glue("{input$table_name}_"))
+        mod_col_bloc_server(id = paste0("column_", i), tab_name = input$table_name, indice = new_col_id)
+        mod_col_bloc_ui(id = ns(paste0("column_", i)))
       })
-      columns_id
     })
 
 
@@ -94,7 +68,7 @@ createTableServer <- function(id, con, schema, data_changed, parent_session = NU
         print(glue::glue("Le fichier CSV {c_ids} n'existe pas"))
         return(NULL)
       }
-
+      action <- "create"
       table_name <- input$table_name
       num_columns <- input$num_columns
       tryCatch({

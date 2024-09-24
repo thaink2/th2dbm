@@ -229,13 +229,13 @@ mod_th2_database_management_server <-
       output$create_table_button <- renderUI({
         req(input$table_num_items, input$table_name)
         actionButton(
-          inputId = ns("save_button"), style = add_button_theme(),
-          label = "Save",
+          inputId = ns("create_table_button"), style = add_button_theme(),
+          label = "Create",
           icon = icon("save")
         )
       })
 
-      observeEvent(input$save_button, {
+      observeEvent(input$create_table_button, {
         db_con <- connect_to_database()
         if (!file.exists(c_ids)) {
           shinyalert::shinyalert(
@@ -246,6 +246,7 @@ mod_th2_database_management_server <-
           )
           return(NULL)
         }
+
         search_query <- sprintf("SELECT * FROM th2metadata_table WHERE TH2DB_TABLE = '%s'", input$table_name)
         search_query <- DBI::dbGetQuery(db_con, search_query)
         DBI::dbDisconnect(db_con)
