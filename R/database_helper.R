@@ -208,6 +208,14 @@ connect_to_database <- function(
       "/home/automl/th2_test.sqlite"
     )
     db_con <- DBI::dbConnect(RSQLite::SQLite(), dbname = db_file_name, extended_types = extended_types)
+  }else if (db_type == "duckdb") {
+    # Ajustement du chemin du fichier SQLite selon le système d'exploitation
+    db_file_name <- ifelse(
+      Sys.info()["sysname"] == "Windows",
+      db_file_name,
+      "/home/automl/th2_test.sqlite"
+    )
+    db_con <- connect_to_duck_db(db_dir = db_params$host)
   } else {
     # Construction de la chaîne de connexion pour les bases de données via JDBC
     path_to_drive <- th2_install_db_drivers(jdbcs_drivers_path = path_driver, db_type = db_type)

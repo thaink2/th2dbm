@@ -17,6 +17,7 @@ dbConfigUI <- function(id) {
     background = "white",
     fluidPage(
       fluidRow(
+        column(width = 3, selectInput(ns("db_type"), "Database Type",choices = c("postgresql","sqlite","duckdb"), selected = Sys.getenv('CURRENT_DB'))),
         column(width = 3, textInput(ns("db_name"), "Database Name", value = Sys.getenv('TH_DATABASE'))),
         column(width = 3, passwordInput(ns("db_host"), "Host", value = Sys.getenv('TH_HOST'))),
         column(width = 2, numericInput(ns("db_port"), "Port", value = as.numeric(Sys.getenv('TH_PORT')))),
@@ -66,9 +67,9 @@ dbConfigServer <- function(id, parent_session = NULL) {
       )
 
       tryCatch({
-
-        new_con <- th2dbm::connect_to_database(db_params, db_type = "postgresql")
+        new_con <- th2dbm::connect_to_database(db_params, db_type = input$db_type)
         con(new_con)
+        Sys.setenv(CURRENT_DB = input$db_type)
         Sys.setenv(TH_DATABASE = input$db_name)
         Sys.setenv(TH_HOST = input$db_host)
         Sys.setenv(TH_PORT = as.character(input$db_port))
