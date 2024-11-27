@@ -39,12 +39,12 @@ th_shinyalert <-
 #' @return A `dashboardHeader` object from `bs4Dash` containing the custom application header.
 #'
 #' @export
-prepare_app_header <- function() {
+prepare_app_header <- function(app_title =  "Database Manager") {
   app_logo_circle <- "https://raw.githubusercontent.com/thaink2/thaink2publicimages/main/thaink2_logo_circle.png"
   bs4Dash::bs4DashNavbar(
     skin = "light",
     title = bs4Dash::bs4DashBrand(
-      title = bs4Dash::bs4DashBrand(title = "Database Manager", image = app_logo_circle)
+      title = bs4Dash::bs4DashBrand(title = app_title, image = app_logo_circle)
     ),
     rightUi = shiny::tagList(
       shiny::tags$li(
