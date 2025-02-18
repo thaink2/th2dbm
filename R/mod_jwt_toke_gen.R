@@ -7,9 +7,7 @@ prepare_bi_app_header <- function(app_title = "BI & Reporting", app_logo = NULL,
   if(is.null(logo_href))logo_href <- "https://www.thaink2.com/en"
   bs4Dash::bs4DashNavbar(
     skin = "light",
-    title = bs4Dash::bs4DashBrand(
-      title = bs4Dash::bs4DashBrand(title = app_title, image = app_logo_circle)
-    ),
+    title = bs4Dash::bs4DashBrand(title = app_title, image = app_logo_circle),
     rightUi = shiny::tagList(
       shiny::tags$li(
         class = "nav-item dropdown",
@@ -57,14 +55,19 @@ mod_jwt_gen_server <- function(id, target_table, mod_refresh_file) {
     })
 
     observeEvent(input$generate_token,{
-      jwt_claim <- jose::jwt_claim(user_mail = input$user_mail,
-                                   target_service = input$target_service,
-                                   usage_purpose = input$usage_purpose)
+      jwt_claim <- jose::jwt_claim(user_mail = "contact@thaink2.com", exp = )
       encrypted_token <- jose::jwt_encode_hmac(claim  = jwt_claim, secret = Sys.getenv("ENCRYPT_PASS"))
+      response <<- httr::POST("https://apis-dev.thaink2.fr/thaink2/admin/send_mail",
+                             httr::add_headers(Authorization = paste0("Bearer ", encrypted_token)),
+                       body = list(user_email = input$user_mail,
+                                   api_service = input$target_service,
+                                   usage_purpose  = input$usage_purpose),
+                       encode = "json")
       showModal(
         modalDialog(title = "JWT Token Value", size = "xl",
                     fluidPage(
-                      h6(encrypted_token)
+                      h2("Your token has been sent to your email",
+                         style = "color: #013DFF; font-size: 20px; font-weight: bold; text-align: center;")
                     )
       ))
       Sys.sleep(5)
@@ -104,7 +107,7 @@ jwt_app_ui <- function(request){
         style = "text-align: center; padding: 10px; background-color: #f8f9fa;",
         HTML('
         <p style="font-size: 12px; color: #6c757d; margin: 0;">
-          By continuing, you agree to our <a href="#" style="text-decoration: underline;">terms and conditions</a>
+          By continuing, you agree to our <a href="https://docs.thaink2.fr/cgu" style="text-decoration: underline;">terms and conditions</a>
           and to receive periodic emails with updates.
         </p>
       ')
