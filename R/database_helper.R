@@ -1,3 +1,13 @@
+is_valid_email <- function(user_mail){
+  has_at <- grepl("@", user_mail) == TRUE
+  if(!has_at)return(has_at)
+  domain_name <- unlist(strsplit(user_mail , split = "@"))
+  if(length(domain_name) != 2)return(FALSE)
+  has_ending <- unlist(strsplit(domain_name[2] , "\\."))
+  if(length(has_ending) != 2)return(FALSE)
+  return(TRUE)
+}
+
 #' Initialiser la base de données
 #'
 #' Initialise la base de données en vérifiant l'existence de la table cible et
