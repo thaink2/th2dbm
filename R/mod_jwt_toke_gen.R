@@ -36,29 +36,30 @@ mod_jwt_gen_server <- function(id, target_table, mod_refresh_file) {
       fluidRow(
         column(width = 2, uiOutput(ns("user_mail"))),
         column(width = 2, uiOutput(ns("target_service"))),
-        column(width = 3, uiOutput(ns("addition_info"))),
+        column(width = 3, uiOutput(ns("usage_purpose"))),
         column(width = 3, br(), uiOutput(ns("generate_token")))
       )
     })
 
     output$target_service <- renderUI({
-      textInput(inputId = ns("target_service"), label = "Service", placeholder = "forecasting")
+      selectInput(inputId = ns("target_service"), label = "Service", choices = c("forecasting","data","analytics"))
     })
     output$user_mail <- renderUI({
       textInput(inputId = ns("user_mail"),label = "User Mail", placeholder = "test@thaink2.com")
     })
-    output$addition_info <- renderUI({
-      textInput(inputId = ns("addition_info"), label = "Additional Infos", placeholder = "scope")
+    output$usage_purpose <- renderUI({
+      textInput(inputId = ns("usage_purpose"), label = "Purpose", placeholder = "Demand forecasting")
     })
     output$generate_token <- renderUI({
-      req(input$user_mail,input$target_service)
-      actionButton(inputId = ns("generate_token"), style = add_button_theme(), label = "Generate", icon = icon("key"))
+      req(input$user_mail,input$target_service, input$usage_purpose)
+      is_valid <- is_valid_email(input$user_mail)
+      if(is_valid)actionButton(inputId = ns("generate_token"), style = add_button_theme(), label = "Generate", icon = icon("key"))
     })
 
     observeEvent(input$generate_token,{
       jwt_claim <- jose::jwt_claim(user_mail = input$user_mail,
                                    target_service = input$target_service,
-                                   addition_info = input$addition_info)
+                                   usage_purpose = input$usage_purpose)
       encrypted_token <- jose::jwt_encode_hmac(claim  = jwt_claim, secret = Sys.getenv("ENCRYPT_PASS"))
       showModal(
         modalDialog(title = "JWT Token Value", size = "xl",
@@ -96,6 +97,18 @@ jwt_app_ui <- function(request){
     ),
     body = bs4Dash::dashboardBody(
       mod_jwt_gen_ui("thaink2jwt")
+    ),
+    footer = bs4Dash::dashboardFooter(
+      fixed = TRUE,
+      tags$div(
+        style = "text-align: center; padding: 10px; background-color: #f8f9fa;",
+        HTML('
+        <p style="font-size: 12px; color: #6c757d; margin: 0;">
+          By continuing, you agree to our <a href="#" style="text-decoration: underline;">terms and conditions</a>
+          and to receive periodic emails with updates.
+        </p>
+      ')
+      )
     )
   )
 }
